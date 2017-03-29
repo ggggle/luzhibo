@@ -9,6 +9,7 @@ import (
 	"github.com/Baozisoftware/luzhibo/api"
 	"github.com/Baozisoftware/luzhibo/workers"
 	"github.com/Baozisoftware/luzhibo/api/getters"
+	"os/exec"
 )
 
 var tasks []task
@@ -22,6 +23,9 @@ type task struct {
 func addTask(oa *api.LuzhiboAPI, path string, t, s bool) bool {
 	var w workers.Worker
 	var e error
+	if oa.NeedFFmpeg && !hasFFmpeg() {
+		return false
+	}
 	if !t {
 		w, e = workers.NewSingleWorker(oa, path, nil)
 	} else {
@@ -238,4 +242,9 @@ func getFiles(path string) []string {
 
 func delPath(path string) {
 	os.RemoveAll(path)
+}
+
+func hasFFmpeg() bool {
+	_, err := exec.LookPath("ffmpeg")
+	return err == nil
 }

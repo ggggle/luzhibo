@@ -18,11 +18,13 @@ import (
 )
 
 type checkRet struct {
-	Pass bool
-	Has  bool
-	Live bool
-	Err  bool
-	Path string
+	Pass    bool
+	Has     bool
+	Live    bool
+	Err     bool
+	Path    string
+	FileExt string
+	Support bool
 }
 
 type tasksRet struct {
@@ -50,6 +52,13 @@ func (_ ajaxHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 				tr.Has = true
 				tr.Path = fmt.Sprintf("[%s]%s_%s", oa.Site, i, time.Now().Format("20060102150405"))
 				tr.Live = l
+				tr.FileExt = oa.FileExt;
+				if oa.NeedFFmpeg {
+					tr.Support = hasFFmpeg()
+				} else {
+					tr.Support = true
+				}
+
 			} else {
 				tr.Err = true
 			}
