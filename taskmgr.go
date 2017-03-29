@@ -57,17 +57,27 @@ func init() {
 func addTasks(urls string) int {
 	c := 0
 	list := strings.Split(urls, "\n")
+	ch := make(chan bool, 0)
+	i := 0
+	l := len(list)
 	for _, url := range list {
-		oa := api.New(url)
-		if oa != nil {
-			i, _, e := oa.GetRoomInfo()
-			if e == nil {
-				p := fmt.Sprintf("[%s]%s_%s", oa.Site, i, time.Now().Format("20060102150405"))
-				addTask(oa, p, true, true)
-				c++
+		go func(u string) {
+			oa := api.New(u)
+			if oa != nil {
+				i, _, e := oa.GetRoomInfo()
+				if e == nil {
+					p := fmt.Sprintf("[%s]%s_%s", oa.Site, i, time.Now().Format("20060102150405"))
+					addTask(oa, p, true, true)
+					c++
+				}
 			}
-		}
+			i++
+			if i == l {
+				ch <- true
+			}
+		}(url)
 	}
+	<-ch
 	return c
 }
 
@@ -191,21 +201,31 @@ func timeLongToStr(v time.Duration) string {
 }
 
 func getTaskInfoList() (list []*taskInfo, err, e bool) {
-	t := make([]*taskInfo, 0)
 	l := len(tasks)
 	if l == 0 {
 		e = true
-	}
-	for i := 0; i < l; i++ {
-		v, te := getTaskInfo(i)
-		if te != 0 {
-			err = true
+	} else {
+		t := make([]*taskInfo, l)
+		ch := make(chan bool, 0)
+		c := 0
+		for i := 0; i < l; i++ {
+			go func(x int) {
+				v, te := getTaskInfo(x)
+				if te != 0 {
+					err = true
+				}
+				if v != nil {
+					t[x] = v
+				}
+				c++
+				if c == l {
+					ch <- true
+				}
+			}(i)
 		}
-		if v != nil {
-			t = append(t, v)
-		}
+		<-ch
+		list = t
 	}
-	list = t
 	return
 }
 

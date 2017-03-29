@@ -15,6 +15,7 @@ import (
 	"github.com/Baozisoftware/luzhibo/api"
 	"regexp"
 	"runtime"
+	"encoding/base64"
 )
 
 type checkRet struct {
@@ -149,7 +150,44 @@ type uiHandler struct{}
 
 //ServeHTTP 实现接口
 func (_ uiHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte(html))
+	b64 := base64.StdEncoding
+	switch r.URL.Path {
+	case "/":
+		w.Header().Add("Content-Type", "text/html; charset=UTF-8")
+		w.Write([]byte(ui_main))
+	case "/favicon.ico":
+		w.Header().Add("Content-Type", "image/x-icon")
+		data, _ := b64.DecodeString(favicon_ico)
+		w.Write(data)
+	case "/donate.gif":
+		w.Header().Add("Content-Type", "image/gif")
+		data, _ := b64.DecodeString(donate_gif)
+		w.Write(data)
+	case "/bootstrap.min.css":
+		w.Header().Add("Content-Type", "text/css")
+		data, _ := b64.DecodeString(bootstrap_min_css)
+		w.Write(data)
+	case "/bootstrap.min.js":
+		w.Header().Add("Content-Type", "application/javascript")
+		data, _ := b64.DecodeString(bootstrap_min_js)
+		w.Write(data)
+	case "/jquery.min.js":
+		w.Header().Add("Content-Type", "application/javascript")
+		data, _ := b64.DecodeString(jquery_min_js)
+		w.Write(data)
+	case "/flv.min.js":
+		w.Header().Add("Content-Type", "application/javascript")
+		data, _ := b64.DecodeString(flv_min_js)
+		w.Write(data)
+	case "/fonts/glyphicons-halflings-regular.woff2":
+		w.Header().Add("Content-Type", "application/octet-stream")
+		data, _ := b64.DecodeString(glyphicons_halflings_regular_woff2)
+		w.Write(data)
+	case "/fonts/glyphicons-halflings-regular.eot":
+		w.Header().Add("Content-Type", "application/octet-stream")
+		data, _ := b64.DecodeString(glyphicons_halflings_regular_eot)
+		w.Write(data)
+	}
 }
 
 func getFile(path string, w http.ResponseWriter) {
@@ -214,6 +252,10 @@ func startOrStopTask(i string, m bool) bool {
 
 func startServer(s string) {
 	http.Handle("/", uiHandler{})
+	http.Handle("/bootstrap.min.css", uiHandler{})
+	http.Handle("/bootstrap.min.js", uiHandler{})
+	http.Handle("/jquery.min.css", uiHandler{})
+	http.Handle("/flv.min.css", uiHandler{})
 	http.Handle("/ajax", ajaxHandler{})
 	http.ListenAndServe(s, nil)
 	panic("WebUI启动失败.")
