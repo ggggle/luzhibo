@@ -6,7 +6,7 @@ Luzhibo App in golang.
 [Download binary](https://github.com/Baozisoftware/Luzhibo-go/releases/)
 
 
-# Please donate
+# Donate
 ## Alipay
 ![donate for alipay](https://github.com/Baozisoftware/luzhibo/blob/master/ui/donate_alipay.png)
 ## Wechat
