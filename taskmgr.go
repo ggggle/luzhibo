@@ -67,8 +67,9 @@ func addTasks(urls string) int {
 				i, _, e := oa.GetRoomInfo()
 				if e == nil {
 					p := fmt.Sprintf("[%s]%s_%s", oa.Site, i, time.Now().Format("20060102150405"))
-					addTask(oa, p, true, true)
-					c++
+					if (addTask(oa, p, true, true)) {
+						c++
+					}
 				}
 			}
 			i++

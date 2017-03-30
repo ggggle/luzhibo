@@ -95,7 +95,7 @@ func (i *multipleworker) do() {
 	for i.run {
 		i.ch2 = make(chan bool, 0)
 		i.index++
-		fn := fmt.Sprintf("%s/%d", i.dirPath, i.index)
+		fn := fmt.Sprintf("%s/%d.%s", i.dirPath, i.index, i.API.FileExt)
 		r, err := NewSingleWorker(i.API, fn, func(x int64) {
 			ec = x
 			i.ch2 <- true

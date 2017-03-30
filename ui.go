@@ -252,7 +252,7 @@ const ui_main = `<!DOCTYPE html>
                         $("button").removeAttr("disabled");
                     } else if (j.Has) {
                         if (!j.Support) {
-                            showTip("当前系统中没有FFmpeg,不支持添加此地址.", 3);
+                            showTip("当前系统中没有FFmpeg,不支持添加此地址.(<strong><a target=\"_noblank\" href=\"https://ffmpeg.org/download.html\" class=\"btn btn-link\">点此下载</a></strong>)", 2);
                             $("button").removeAttr("disabled");
                             return;
                         }
@@ -399,7 +399,7 @@ const ui_main = `<!DOCTYPE html>
                     c += "danger";
             }
             $("#tiptext").attr("class", c);
-            $("#tiptext").text(text);
+            $("#tiptext").html(text);
             $("#tipui").removeAttr("hidden");
             tips++;
             setTimeout(function () {
