@@ -74,8 +74,13 @@ func (i *panda) GetLiveInfo(id string) (live LiveInfo, err error) {
 	img := (*(roomInfo.jToken("pictures")))["img"].(string)
 	key := videoInfo["room_key"].(string)
 	flag := videoInfo["plflag"].(string)
+	plflag_list := videoInfo["plflag_list"].(string)
+	auth := *(pruseJSON(plflag_list).jToken("auth"))
+	rid := auth["rid"]
+	t := auth["time"]
+	sign := auth["sign"]
 	flag = strings.Split(flag, "_")[1]
-	video := fmt.Sprintf("http://pl%s.live.panda.tv/live_panda/%s.flv", flag, key)
+	video := fmt.Sprintf("http://pl%s.live.panda.tv/live_panda/%s.flv?sign=%s&ts=%s&rid=%s", flag, key, sign, t, rid)
 	live.LiveNick = nick
 	live.RoomTitle = title
 	live.RoomDetails = details
