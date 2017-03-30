@@ -41,7 +41,7 @@ func (i *afreeca) GetRoomInfo(url string) (id string, live bool, err error) {
 		}
 	}()
 	url = strings.ToLower(url)
-	reg, _ := regexp.Compile("play\\.afreecatv\\.com/(\\w+)/\\d+")
+	reg, _ := regexp.Compile("play\\.afreecatv\\.com/(\\w+)(/\\d+)*")
 	id = reg.FindStringSubmatch(url)[1]
 	tmp, err := httpGet(url)
 	if !strings.Contains(tmp, fmt.Sprintf("id : '%s'", id)) {
