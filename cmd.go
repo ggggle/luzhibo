@@ -17,6 +17,8 @@ func cmd() {
 	fmt.Println(t)
 	fmt.Println("---微信打赏---")
 	qrcodeTerminal.New().Get("https://wx.tenpay.com/f2f?t=AQAAADa%2B%2BzNyN3aCKJwsKv7EdXs%3D").Print()
+	fmt.Println("---支付宝打赏---")
+	qrcodeTerminal.New().Get("https://mobilecodec.alipay.com/client_download.htm?qrcode=FKX02240EN0W4NYB1ION16").Print()
 	for {
 		fmt.Println("输入数字并回车确认:")
 		fmt.Println("1.添加一个普通任务")
@@ -46,7 +48,7 @@ func cmd() {
 
 func show() {
 l1:
-	fmt.Printf("#\t类型\t运行中\t当前序数\t路径\t房间标题\n")
+	fmt.Print("#\t类型\t运行中\t当前序数\t路径\t房间标题\n")
 	cc := len(tasks)
 	for i := 0; i < cc; i++ {
 		o, _ := getTaskInfo(i)
@@ -90,7 +92,11 @@ l1:
 }
 
 func openWebUI() {
-	browser.OpenURL("http://localhost:12216")
+	u := "http://localhost"
+	if port != 80 {
+			u = fmt.Sprintf("%s:%d", u, port)
+	}
+	browser.OpenURL(u)
 }
 
 func add(x bool) {

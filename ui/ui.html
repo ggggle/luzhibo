@@ -124,7 +124,7 @@
                             if (j.Err) {
                                 showTip("获取任务列表完成,但发生了错误.", 2);
                             } else
-                                showTip("获取任务列表成功.", 0);
+                                showTip("获取任务列表成功.", 1);
                             $("button").removeAttr("disabled");
                         },
                         error: function () {
@@ -139,8 +139,25 @@
             ;
         }
 
+        function showSupports() {
+            showTip("正在获取平台支持信息...", 0);
+            $.ajax({
+                url: "/ajax?act=supports",
+                success: function (ret) {
+                    ret = ret.replace(/\*/g, "<span style=\"color: red; \">*</span>");
+                    $("#sup").removeAttr("hidden");
+                    $("#supt").html(ret);
+                    showTip("获取平台支持信息成功.", 1);
+                },
+                error: function () {
+                    showTip("获取平台支持信息失败.", 2);
+                }
+            });
+
+        }
+
         $(document).ready(function () {
-            showTip("检查版本更新...", 0);
+            showTip("正在检查版本更新...", 0);
             $.ajax({
                 url: "/ajax?act=ver",
                 success: function (ret) {
@@ -155,10 +172,12 @@
                         );
                     }
                     showTip("获取版本信息成功.", 1);
+                    showSupports();
                     showTasks();
                 },
                 error: function () {
                     showTip("获取版本信息失败.", 2);
+                    showSupports();
                     showTasks();
                 }
             });
@@ -403,13 +422,11 @@
 
 <body>
 <div class="container-fluid ">
-    <div class="container-fluid">
-        <div id="uver_tip" class="alert alert-info" style="margin:auto auto;width:30%;text-align: center"
-             hidden="hidden">
-            <button type="button" class="close" data-dismiss="alert">×</button>
-            <h4 id="uver"></h4>
-            <strong><a id="uver_a" class="btn btn-link">点此下载</a></strong>
-        </div>
+    <div id="uver_tip" class="alert alert-info" style="margin:auto auto;width:30%;text-align: center"
+         hidden="hidden">
+        <button type="button" class="close" data-dismiss="alert">×</button>
+        <h4 id="uver"></h4>
+        <strong><a id="uver_a" class="btn btn-link">点此下载</a></strong>
     </div>
     <h4 style="text-align: center" hidden="hidden" id="tipui">
         <span class="label label-success" id="tiptext"></span>
@@ -422,8 +439,27 @@
                 </h1>
             </div>
             <div style="text-align:center">
-                <h3>微信打赏</h3>
-                <img src="donate.gif"/>
+                <span>
+                    <img src="donate.gif">
+                    <img src="donate.gif">
+                    <img src="donate.gif">
+                </span>
+                <h3>这么好的软件,还是开源的,为什么不打赏?良心不会痛吗?!</h3>
+                <div class="col-md-6">
+                    <h4>支付宝</h4>
+                    <img src="donate_alipay.png"/>
+                </div>
+                <div class="col-md-6">
+                    <h4>微信</h4>
+                    <img src="donate_wechat.png"/>
+                </div>
+                <h5 id="sup" hidden="hidden" style="color: gray">
+                    已支持的平台:
+                    <span id="supt">
+                    </span>
+                    <br>
+                    (带<span style="color: red; ">*</span>的平台需要FFmpeg)
+                </h5>
                 <h4>反馈,建议QQ群:<a target="_noblank"
                                 href="https://shang.qq.com/wpa/qunwpa?idkey=c5cb06c2e524eb7872f80317621bf51f9c0b1d3451451232dbe6aa3fbdbb15ff">23153821</a>
                 </h4>

@@ -81,3 +81,15 @@ func getGetter(url string) getters.Getter {
 	}
 	return nil
 }
+
+func GetSupports() []string {
+	gs := getters.Getters
+	ret := make([]string, len(gs))
+	for i, oa := range gs {
+		ret[i] = oa.Site()
+		if oa.NeedFFMpeg() {
+			ret[i]=ret[i]+"*"
+		}
+	}
+	return ret
+}

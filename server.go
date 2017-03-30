@@ -16,6 +16,7 @@ import (
 	"regexp"
 	"runtime"
 	"encoding/base64"
+	"strings"
 )
 
 type checkRet struct {
@@ -39,7 +40,8 @@ type ajaxHandler struct{}
 //ServeHTTP 实现接口
 func (_ ajaxHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
-	switch r.Form.Get("act") {
+	act := r.Form.Get("act")
+	switch act {
 	case "check":
 		tr := checkRet{}
 		url := r.Form.Get("url")
@@ -142,6 +144,11 @@ func (_ ajaxHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	case "ver":
 		w.Write([]byte(checkUpdate()))
 		return
+	case "supports":
+		lines := api.GetSupports()
+		s := strings.Join(lines, "/")
+		w.Write([]byte(s))
+		return
 	}
 	w.Write([]byte(""))
 }
@@ -159,9 +166,17 @@ func (_ uiHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		w.Header().Add("Content-Type", "image/x-icon")
 		data, _ := b64.DecodeString(favicon_ico)
 		w.Write(data)
+	case "/donate_alipay.png":
+		w.Header().Add("Content-Type", "image/png")
+		data, _ := b64.DecodeString(donate_alipay_png)
+		w.Write(data)
 	case "/donate.gif":
 		w.Header().Add("Content-Type", "image/gif")
 		data, _ := b64.DecodeString(donate_gif)
+		w.Write(data)
+	case "/donate_wechat.png":
+		w.Header().Add("Content-Type", "image/png")
+		data, _ := b64.DecodeString(donate_wechat_png)
 		w.Write(data)
 	case "/bootstrap.min.css":
 		w.Header().Add("Content-Type", "text/css")
