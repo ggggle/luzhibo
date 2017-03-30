@@ -26,13 +26,14 @@ const ui_main = `<!DOCTYPE html>
         }
 
         function addTasksAction() {
+            $("button").attr("disabled", "disabled");
+            $("#addTasksDialog").modal('hide');
             var urls = $("#addTask_urls").val();
             urls = encodeURIComponent(urls);
             if (urls == "") {
-                alert("至少输入一行地址.");
+                showTip("至少输入一行地址.", 2);
+                $("button").removeAttr("disabled");
             } else {
-                $("button").attr("disabled", "disabled");
-                $("#addTasksDialog").modal('hide');
                 showTip("正在添加批量任务...", 0);
                 $.ajax({
                     url: "/ajax?act=addex&urls=" + urls, success: function (ret) {
@@ -199,24 +200,24 @@ const ui_main = `<!DOCTYPE html>
                 if (e != null) {
                     if (e == true) {
                         alert("文件(路径)已存在,请更换.");
-                        $("button").removeAttr("disabled");
-                        $("#addTaskDialog").modal('show');
+                        setTimeout(function () {
+                            $("button").removeAttr("disabled");
+                            $("#addTaskDialog").modal('show');
+                        }, 500);
                         return;
                     }
                     showTip("正在添加任务...", 0);
                     $.ajax({
-                        url: "/ajax?act=add&url=" + url + "&path=" + path + "&m=" + m + "&run=" + r,
+                        url: "/ajax?act=add&url=" + url + "&path=" + tp + "&m=" + m + "&run=" + r,
                         success: function (ret) {
                             if (ret == "ok")
                                 showTip("添加任务成功.", 1);
                             else
                                 showTip("添加任务失败.", 3);
-                            $("button").removeAttr("disabled");
                             showTasks(true);
                         },
                         error: function () {
                             showTip("请求后端失败.", 3);
-                            $("button").removeAttr("disabled");
                             showTasks(true);
                         }
                     });
@@ -247,13 +248,14 @@ const ui_main = `<!DOCTYPE html>
                 success: function (ret) {
                     var j = JSON.parse(ret);
                     if (!j.Pass) {
-                        alert("不支持的地址.");
-                    }
-                    else if (!j.Support) {
-                        showTip("当前系统中没有FFmpeg,不支持添加此地址.", 3);
+                        showTip("不支持的地址.", 2);
                         $("button").removeAttr("disabled");
-                        return;
                     } else if (j.Has) {
+                        if (!j.Support) {
+                            showTip("当前系统中没有FFmpeg,不支持添加此地址.", 3);
+                            $("button").removeAttr("disabled");
+                            return;
+                        }
                         if (!j.Live) {
                             $("#addTask_m").prop("checked", true);
                             $("#addTask_m").attr("disabled", "disabled");
@@ -263,10 +265,14 @@ const ui_main = `<!DOCTYPE html>
                         $("#addTask_fileext").val(j.FileExt);
                         $("#addTask_url").attr("readonly", 'readonly');
                         $("#addTask_pathg").removeAttr("hidden");
-                    } else
-                        alert("不存在的房间.");
-                    $("button").removeAttr("disabled");
-                    $("#addTaskDialog").modal('show');
+                        setTimeout(function () {
+                            $("button").removeAttr("disabled");
+                            $("#addTaskDialog").modal('show');
+                        }, 500);
+                    } else {
+                        showTip("不存在的房间.", 2);
+                        $("button").removeAttr("disabled");
+                    }
                 },
                 error: function () {
                     showTip("获取地址信息失败.", 3);

@@ -54,7 +54,6 @@ func (i *singleworker) Start() {
 		return
 	}
 	i.run = true
-	i.filePath += "." + i.API.FileExt
 	i.dl = newDownloader(i.url, i.filePath, i.dwnloaderCallback)
 	i.ch = make(chan bool, 0)
 	i.dl.Start()
