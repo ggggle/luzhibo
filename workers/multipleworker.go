@@ -113,7 +113,7 @@ func (i *multipleworker) do() {
 		}
 		p, err := os.Stat(fn)
 		if err == nil {
-			if p.Size() == 0 {
+			if !p.IsDir() && p.Size() == 0 {
 				i.index--
 			}
 		} else {
