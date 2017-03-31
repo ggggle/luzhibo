@@ -41,11 +41,10 @@ func (i *douyu) GetRoomInfo(url string) (id string, live bool, err error) {
 		}
 	}()
 	html, err := httpGet(url)
-	reg, _ := regexp.Compile("\"room_id\":\\d+")
+	reg, _ := regexp.Compile("\\\\?\"room_id\\\\?\":(\\d+)")
 	tmp := reg.FindString(html)
 	live = !strings.Contains(html, "上次直播")
-	reg, _ = regexp.Compile("\\d+")
-	id = reg.FindString(tmp)
+	id = reg.FindStringSubmatch(tmp)[1]
 	if id == "" {
 		err = errors.New("fail get data")
 	}
