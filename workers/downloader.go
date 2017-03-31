@@ -7,7 +7,6 @@ import (
 	"crypto/tls"
 	"github.com/Baozisoftware/luzhibo/api/getters"
 	"os/exec"
-	"strings"
 	"path"
 	"os"
 )
@@ -21,6 +20,7 @@ type downloader struct {
 	run      bool
 	ch       chan bool
 	ch2      chan bool
+	fm       bool
 }
 
 func newDownloader(url, filepath string, callbcak WorkCompletedCallBack) *downloader {
@@ -42,7 +42,7 @@ func (i *downloader) Start() {
 	i.run = true
 	i.ch = make(chan bool, 0)
 	i.ch2 = make(chan bool, 1)
-	if strings.Contains(i.url, "rtmp://") || strings.Contains(i.url, ".m3u8") {
+	if i.fm {
 		go i.ffmpeg(i.url, i.filePath)
 	} else {
 		go i.http(i.url, i.filePath)
@@ -168,4 +168,8 @@ func (i *downloader) ffmpeg(url, filepath string) {
 	if cmd.Process != nil {
 		cmd.Process.Kill()
 	}
+}
+
+func (i *downloader) UseFFmpeg() {
+	i.fm = true
 }

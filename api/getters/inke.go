@@ -20,7 +20,7 @@ func (i *inke) SiteURL() string {
 
 //SiteIcon 实现接口
 func (i *inke) SiteIcon() string {
-	return i.SiteURL() + "/favicon.ico"
+	return "http://static.inke.com/s/images/favicon.ico"
 }
 
 //FileExt 实现接口

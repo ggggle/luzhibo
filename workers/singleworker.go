@@ -56,6 +56,9 @@ func (i *singleworker) Start() {
 	i.run = true
 	i.dl = newDownloader(i.url, i.filePath, i.dwnloaderCallback)
 	i.ch = make(chan bool, 0)
+	if i.API.NeedFFmpeg {
+		i.dl.UseFFmpeg()
+	}
 	i.dl.Start()
 }
 

@@ -19,7 +19,7 @@ func (i *qiedianjing) SiteURL() string {
 
 //SiteIcon 实现接口
 func (i *qiedianjing) SiteIcon() string {
-	return i.SiteURL() + "/favicon.ico"
+	return "http://egame.gtimg.cn/club/pgg_pcweb/img/favicons/favicon.ico"
 }
 
 //FileExt 实现接口
@@ -42,13 +42,13 @@ func (i *qiedianjing) GetRoomInfo(url string) (id string, live bool, err error) 
 	reg, _ := regexp.Compile("egame\\.qq\\.com/live\\?anchorid=(\\d+)")
 	id = reg.FindStringSubmatch(url)[1]
 	if id != "" {
-		url = "http://share.egame.qq.com/cgi-bin/pgg_skey_async_fcgi?param={%220%22:{%22module%22:%22pgg_live_read_svr%22,%22method%22:%22get_live_and_profile_info%22,%22param%22:{%22anchor_id%22:"+id+"}}}"
+		url = "http://share.egame.qq.com/cgi-bin/pgg_skey_async_fcgi?param={%220%22:{%22module%22:%22pgg_live_read_svr%22,%22method%22:%22get_live_and_profile_info%22,%22param%22:{%22anchor_id%22:" + id + "}}}"
 		var tmp string
 		tmp, err = httpGet(url)
-		if strings.Contains(tmp,"\"retMsg\":\"ok\"") && strings.Contains(tmp,"\"provider\": 2") {
+		if strings.Contains(tmp, "\"retMsg\":\"ok\"") && strings.Contains(tmp, "\"provider\": 2") {
 			json := pruseJSON(tmp)
-			live=(*json.jToken("data").jToken("0").jToken("retBody").jToken("data").jToken("profile_info"))["is_live"].(float64)==1
-		}else {
+			live = (*json.jToken("data").jToken("0").jToken("retBody").jToken("data").jToken("profile_info"))["is_live"].(float64) == 1
+		} else {
 			id = ""
 		}
 	}
@@ -66,10 +66,10 @@ func (i *qiedianjing) GetLiveInfo(id string) (live LiveInfo, err error) {
 		}
 	}()
 	live = LiveInfo{RoomID: id}
-	url := "http://share.egame.qq.com/cgi-bin/pgg_skey_async_fcgi?param={%220%22:{%22module%22:%22pgg_live_read_svr%22,%22method%22:%22get_live_and_profile_info%22,%22param%22:{%22anchor_id%22:"+id+"}}}"
+	url := "http://share.egame.qq.com/cgi-bin/pgg_skey_async_fcgi?param={%220%22:{%22module%22:%22pgg_live_read_svr%22,%22method%22:%22get_live_and_profile_info%22,%22param%22:{%22anchor_id%22:" + id + "}}}"
 	tmp, err := httpGet(url)
 	json := pruseJSON(tmp).jToken("data").jToken("0").jToken("retBody").jToken("data")
-	profile_info,video_info:=*(json.jToken("profile_info")),*(json.jToken("video_info"))
+	profile_info, video_info := *(json.jToken("profile_info")), *(json.jToken("video_info"))
 	nick := profile_info["nick_name"].(string)
 	details := profile_info["brief"].(string)
 	title := video_info["title"].(string)

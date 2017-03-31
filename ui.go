@@ -284,6 +284,7 @@ const ui_main = `<!DOCTYPE html>
         function startBtnEvt(o) {
             if (theTasks[o - 1].Files != null && !confirm("文件(路径)已存在,是否覆盖并继续?"))
                 return;
+            $("button").attr("disabled", "disabled");
             showTip("正在开始任务...", 0);
             $.ajax({
                 url: "/ajax?act=start&id=" + o, success: function (ret) {
@@ -302,6 +303,7 @@ const ui_main = `<!DOCTYPE html>
 
         function stopBtnEvt(o) {
             if (confirm("确定要停止此任务?")) {
+                $("button").attr("disabled", "disabled");
                 showTip("正在停止任务...", 0);
                 $.ajax({
                     url: "/ajax?act=stop&id=" + o, success: function (ret) {
@@ -322,6 +324,7 @@ const ui_main = `<!DOCTYPE html>
         function delBtnEvt(o) {
             if (confirm("确定要删除此任务?")) {
                 var f = confirm("删除文件(路径)?");
+                $("button").attr("disabled", "disabled");
                 showTip("正在删除任务...", 0);
                 $.ajax({
                     url: "/ajax?act=del&id=" + o + "&f=" + f, success: function (ret) {
@@ -452,7 +455,7 @@ const ui_main = `<!DOCTYPE html>
                     <img src="donate.gif">
                     <img src="donate.gif">
                 </span>
-                <h3>这么好的软件,还是开源的,为什么不打赏?良心不会痛吗?!</h3>
+                <h3>这么好用且开源的软件,不打赏下?良心不会痛吗?!</h3>
                 <div class="col-md-6">
                     <h4>支付宝</h4>
                     <img src="donate_alipay.png"/>
