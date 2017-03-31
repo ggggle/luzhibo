@@ -33,8 +33,7 @@
                 $("button").removeAttr("disabled");
             } else {
                 showTip("正在添加批量任务...", 0);
-                $.ajax({
-                    url: "/ajax?act=addex&urls=" + urls, success: function (ret) {
+                doAjax("addex", "urls=" + urls, function (ret) {
                         if (ret > 0) {
                             showTip("成功添加" + ret + "条任务.", 1);
                         } else {
@@ -43,11 +42,10 @@
                         $("button").removeAttr("disabled");
                         showTasks(true);
                     },
-                    error: function () {
+                    function () {
                         showTip("请求后端失败.", 3);
                         $("button").removeAttr("disabled");
-                    }
-                });
+                    });
             }
             return false;
         }
@@ -60,108 +58,100 @@
             if (s == true)
                 cf = 1000;
             setTimeout(function () {
-                    showTip("正在获取任务列表...", 0);
-                    $.ajax({
-                        url: "/ajax?act=tasks", success: function (ret) {
-                            var j = JSON.parse(ret);
-                            if (!j.E) {
-                                theTasks = j.Tasks;
-                                var rows = "";
-                                var row = "";
-                                for (var i = 0; i < theTasks.length; i++) {
-                                    var v = theTasks[i];
-                                    var inf = v.LiveInfo;
-                                    t = "[无数据]";
-                                    if (inf != null)
-                                        var t = inf.RoomTitle;
-                                    s = v.Run ? "<div class=\"progress progress-striped active\"><div class=\"progress-bar progress-success\" style=\"width: 100%;\"></div></div>" : "<div class=\"progress progress-striped\"><div class=\"progress-bar progress-bar-danger\" role=\"progressbar\" style=\"width: 100%;\"></div></div>";
-                                    var m = v.M ? "循环" : "普通";
-                                    var l = !v.Run ? "未运行" : v.TimeLong;
-                                    var ls = v.Live ? "<span class=\"glyphicon glyphicon-ok-circle\" />" : "<span class=\"glyphicon glyphicon-remove-circle\" />";
-                                    var buttons = "<th>";
-                                    if (v.Run)
-                                        buttons += "<button onclick=\"stopBtnEvt(" + (i + 1) + ")\" class=\"btn btn-warning\" type=\"button\"><span class=\"glyphicon glyphicon-stop\" /> 停止</button>\n";
-                                    else {
-                                        buttons += "<button onclick=\"startBtnEvt(" + (i + 1) + ")\" class=\"btn btn-success\" type=\"button\"><span class=\"glyphicon glyphicon-play\" /> 开始</button>\n";
-                                        buttons += "<button onclick=\"delBtnEvt(" + (i + 1) + ")\" class=\"btn btn-danger\" type=\"button\"><span class=\"glyphicon glyphicon-remove\" /> 删除</button>\n";
-                                    }
-                                    if (v.Files != null) {
-                                        if (v.Files.length == 1) {
-                                            buttons += "<button onclick=\"down(" + (i + 1) + ",0)\" class=\"btn btn-primary\" type=\"button\"><span class=\"glyphicon glyphicon-download\" /> 下载</button>\n";
-                                            if (v.FileExt == "flv")
-                                                buttons += "<button onclick=\"play(" + (i + 1) + ",0)\" class=\"btn btn-primary\" type=\"button\"><span class=\"glyphicon glyphicon-play-circle\" />  播放</button>\n";
-                                        } else {
-                                            var dlBtn = "<div class=\"btn-group\"><button type=\"button\" class=\"btn btn-primary dropdown-toggle\" data-toggle=\"dropdown\"><span class=\"glyphicon glyphicon-download\" /> 下载 <span class=\"caret\"></span></button><ul class=\"dropdown-menu\" role=\"menu\">";
-                                            var pyBtn = "<div class=\"btn-group\"><button type=\"button\" class=\"btn btn-primary dropdown-toggle\" data-toggle=\"dropdown\"><span class=\"glyphicon glyphicon-play-circle\" /> 播放 <span class=\"caret\"></span></button><ul class=\"dropdown-menu\" role=\"menu\">";
-                                            for (var x = 0; x < v.Files.length; x++) {
-                                                dlBtn += "<li onclick=\"down(" + (i + 1) + "," + (x + 1) + ")\"><button class=\"btn btn-link\"><span class=\"glyphicon glyphicon-download-alt\" /> 分段" + (x + 1) + "</a></li>";
-                                                pyBtn += "<li onclick=\"play(" + (i + 1) + "," + (x + 1) + ")\"><button class=\"btn btn-link\"><span class=\"glyphicon glyphicon-play\" /> 分段" + (x + 1) + "</a></li>";
-                                            }
-                                            dlBtn += "</ul></div>\n";
-                                            pyBtn += "</ul></div>\n";
-                                            buttons += dlBtn;
-                                            if (v.FileExt == "flv") {
-                                                buttons += pyBtn;
-                                            }
+                showTip("正在获取任务列表...", 0);
+                doAjax("tasks", "", function (ret) {
+                        var j = JSON.parse(ret);
+                        if (!j.E) {
+                            theTasks = j.Tasks;
+                            var rows = "";
+                            var row = "";
+                            for (var i = 0; i < theTasks.length; i++) {
+                                var v = theTasks[i];
+                                var inf = v.LiveInfo;
+                                t = "[无数据]";
+                                if (inf != null)
+                                    var t = inf.RoomTitle;
+                                s = v.Run ? "<div class=\"progress progress-striped active\"><div class=\"progress-bar progress-success\" style=\"width: 100%;\"></div></div>" : "<div class=\"progress progress-striped\"><div class=\"progress-bar progress-bar-danger\" role=\"progressbar\" style=\"width: 100%;\"></div></div>";
+                                var m = v.M ? "循环" : "普通";
+                                var l = !v.Run ? "未运行" : v.TimeLong;
+                                var ls = v.Live ? "<span class=\"glyphicon glyphicon-ok-circle\" />" : "<span class=\"glyphicon glyphicon-remove-circle\" />";
+                                var buttons = "<th>";
+                                if (v.Run)
+                                    buttons += "<button onclick=\"stopBtnEvt(" + (i + 1) + ")\" class=\"btn btn-warning\" type=\"button\"><span class=\"glyphicon glyphicon-stop\" /> 停止</button>\n";
+                                else {
+                                    buttons += "<button onclick=\"startBtnEvt(" + (i + 1) + ")\" class=\"btn btn-success\" type=\"button\"><span class=\"glyphicon glyphicon-play\" /> 开始</button>\n";
+                                    buttons += "<button onclick=\"delBtnEvt(" + (i + 1) + ")\" class=\"btn btn-danger\" type=\"button\"><span class=\"glyphicon glyphicon-remove\" /> 删除</button>\n";
+                                }
+                                if (v.Files != null) {
+                                    if (v.Files.length == 1) {
+                                        buttons += "<button onclick=\"down(" + (i + 1) + ",0)\" class=\"btn btn-primary\" type=\"button\"><span class=\"glyphicon glyphicon-download\" /> 下载</button>\n";
+                                        if (v.FileExt == "flv")
+                                            buttons += "<button onclick=\"play(" + (i + 1) + ",0)\" class=\"btn btn-primary\" type=\"button\"><span class=\"glyphicon glyphicon-play-circle\" />  播放</button>\n";
+                                    } else {
+                                        var dlBtn = "<div class=\"btn-group\"><button type=\"button\" class=\"btn btn-primary dropdown-toggle\" data-toggle=\"dropdown\"><span class=\"glyphicon glyphicon-download\" /> 下载 <span class=\"caret\"></span></button><ul class=\"dropdown-menu\" role=\"menu\">";
+                                        var pyBtn = "<div class=\"btn-group\"><button type=\"button\" class=\"btn btn-primary dropdown-toggle\" data-toggle=\"dropdown\"><span class=\"glyphicon glyphicon-play-circle\" /> 播放 <span class=\"caret\"></span></button><ul class=\"dropdown-menu\" role=\"menu\">";
+                                        for (var x = 0; x < v.Files.length; x++) {
+                                            dlBtn += "<li onclick=\"down(" + (i + 1) + "," + (x + 1) + ")\"><button class=\"btn btn-link\"><span class=\"glyphicon glyphicon-download-alt\" /> 分段" + (x + 1) + "</a></li>";
+                                            pyBtn += "<li onclick=\"play(" + (i + 1) + "," + (x + 1) + ")\"><button class=\"btn btn-link\"><span class=\"glyphicon glyphicon-play\" /> 分段" + (x + 1) + "</a></li>";
+                                        }
+                                        dlBtn += "</ul></div>\n";
+                                        pyBtn += "</ul></div>\n";
+                                        buttons += dlBtn;
+                                        if (v.FileExt == "flv") {
+                                            buttons += pyBtn;
                                         }
                                     }
-                                    if (v.LiveInfo != null)
-                                        buttons += "<button onclick=\"infoBtnEvt(" + (i + 1) + ")\" class=\"btn btn-info\" type=\"button\"><span class=\"glyphicon glyphicon-option-horizontal\" /> 详情</button>\n";
-                                    buttons += "</th>";
-                                    row = "<tr>";
-                                    row += "<td>" + (i + 1) + "</td>";
-                                    row += "<td><a target=\"_blank\" href=\"" + v.SiteURL + "\"  title=\"" + v.Site + "\"><img height=\"16\" width=\"16\" src=" + v.SiteIcon + " /></a></td>";
-                                    row += "<td>" + ls + "</td>";
-                                    row += "<td>" + m + "</td>";
-                                    row += "<td>" + s + "</td>";
-                                    row += "<td>" + l + "</td>";
-                                    row += "<td>" + t + "</td>";
-                                    row += buttons;
-                                    row += "</tr>";
-                                    rows += row;
                                 }
-                                $("#tasklist").html(rows);
+                                if (v.LiveInfo != null)
+                                    buttons += "<button onclick=\"infoBtnEvt(" + (i + 1) + ")\" class=\"btn btn-info\" type=\"button\"><span class=\"glyphicon glyphicon-option-horizontal\" /> 详情</button>\n";
+                                buttons += "</th>";
+                                row = "<tr>";
+                                row += "<td>" + (i + 1) + "</td>";
+                                row += "<td><a target=\"_blank\" href=\"" + v.SiteURL + "\"  title=\"" + v.Site + "\"><img height=\"16\" width=\"16\" src=" + v.SiteIcon + " /></a></td>";
+                                row += "<td>" + ls + "</td>";
+                                row += "<td>" + m + "</td>";
+                                row += "<td>" + s + "</td>";
+                                row += "<td>" + l + "</td>";
+                                row += "<td>" + t + "</td>";
+                                row += buttons;
+                                row += "</tr>";
+                                rows += row;
                             }
-                            if (j.Err) {
-                                showTip("获取任务列表完成,但发生了错误.", 2);
-                            } else
-                                showTip("获取任务列表成功.", 1);
-                            $("button").removeAttr("disabled");
-                        },
-                        error: function () {
-                            showTip("获取任务列表失败.", 3);
-                            $("button").removeAttr("disabled");
+                            $("#tasklist").html(rows);
                         }
+                        if (j.Err) {
+                            showTip("获取任务列表完成,但发生了错误.", 2);
+                        } else
+                            showTip("获取任务列表成功.", 1);
+                        $("button").removeAttr("disabled");
+                    },
+                    function () {
+                        showTip("获取任务列表失败.", 3);
+                        $("button").removeAttr("disabled");
                     });
-                }
-                ,
-                cf
-            )
-            ;
+
+            }, cf);
         }
 
         function showSupports() {
             showTip("正在获取平台支持信息...", 0);
-            $.ajax({
-                url: "/ajax?act=supports",
-                success: function (ret) {
+            doAjax("supports", "",
+                function (ret) {
                     ret = ret.replace(/\*/g, "<span style=\"color: red; \">*</span>");
                     $("#sup").removeAttr("hidden");
                     $("#supt").html(ret);
                     showTip("获取平台支持信息成功.", 1);
                 },
-                error: function () {
+                function () {
                     showTip("获取平台支持信息失败.", 2);
-                }
-            });
+                });
 
         }
 
         $(document).ready(function () {
             showTip("正在检查版本更新...", 0);
-            $.ajax({
-                url: "/ajax?act=ver",
-                success: function (ret) {
+            doAjax("ver", "",
+                function (ret) {
                     var arr = ret.split("|");
                     $("#tver").text("(Ver " + arr[0] + ")");
                     if (arr[1] != "null") {
@@ -176,12 +166,11 @@
                     showSupports();
                     showTasks();
                 },
-                error: function () {
+                function () {
                     showTip("获取版本信息失败.", 2);
                     showSupports();
                     showTasks();
-                }
-            });
+                });
         });
 
         function doAddTask() {
@@ -205,45 +194,42 @@
                         return;
                     }
                     showTip("正在添加任务...", 0);
-                    $.ajax({
-                        url: "/ajax?act=add&url=" + url + "&path=" + tp + "&m=" + m + "&run=" + r,
-                        success: function (ret) {
+                    doAjax("add", "url=" + url + "&path=" + tp + "&m=" + m + "&run=" + r,
+                        function (ret) {
                             if (ret == "ok")
                                 showTip("添加任务成功.", 1);
                             else
                                 showTip("添加任务失败.", 3);
                             showTasks(true);
                         },
-                        error: function () {
+                        function () {
                             showTip("请求后端失败.", 3);
                             showTasks(true);
-                        }
-                    });
-                }
+                        });
+                } else
+                    $("button").removeAttr("disabled");
             });
         }
 
         function checkPathExist(path, cb) {
             showTip("正在获取路径信息...", 0);
-            $.ajax({
-                url: "/ajax?act=exist&path=" + path, success: function (ret) {
+            doAjax("exist", "path=" + path,
+                function (ret) {
                     showTip("路径信息获取成功.", 1);
                     cb(ret == "exist");
                 },
-                error: function () {
+                function () {
                     showTip("路径信息获取失败.", 3);
                     cb(null);
-                }
-            });
+                });
         }
 
         function addTaskCheck() {
             showTip("正在获取地址信息...", 0);
             var url = $("#addTask_url").val();
             url = encodeURIComponent(url);
-            $.ajax({
-                url: "/ajax?act=check&url=" + url,
-                success: function (ret) {
+            doAjax("check", "url=" + url,
+                function (ret) {
                     var j = JSON.parse(ret);
                     if (!j.Pass) {
                         showTip("不支持的地址.", 2);
@@ -272,11 +258,10 @@
                         $("button").removeAttr("disabled");
                     }
                 },
-                error: function () {
+                function () {
                     showTip("获取地址信息失败.", 3);
                     $("button").removeAttr("disabled");
-                }
-            });
+                });
         }
 
         function startBtnEvt(o) {
@@ -284,38 +269,35 @@
                 return;
             $("button").attr("disabled", "disabled");
             showTip("正在开始任务...", 0);
-            $.ajax({
-                url: "/ajax?act=start&id=" + o, success: function (ret) {
+            doAjax("start", "id=" + o,
+                function (ret) {
                     if (ret == "ok")
                         showTip("开始任务成功.", 1);
                     else
                         showTip("开始任务失败.", 3);
                     showTasks(true);
                 },
-                error: function () {
+                function () {
                     showTip("请求后端失败.", 3);
                     showTasks(true);
-                }
-            });
+                });
         }
 
         function stopBtnEvt(o) {
             if (confirm("确定要停止此任务?")) {
                 $("button").attr("disabled", "disabled");
                 showTip("正在停止任务...", 0);
-                $.ajax({
-                    url: "/ajax?act=stop&id=" + o, success: function (ret) {
+                doAjax("stop", "id=" + o, function (ret) {
                         if (ret == "ok")
                             showTip("停止任务成功.", 1);
                         else
                             showTip("停止任务失败.", 3);
                         showTasks(true);
                     },
-                    error: function () {
+                    function () {
                         showTip("请求后端失败.", 3);
                         showTasks(true);
-                    }
-                });
+                    });
             }
         }
 
@@ -324,19 +306,17 @@
                 var f = confirm("删除文件(路径)?");
                 $("button").attr("disabled", "disabled");
                 showTip("正在删除任务...", 0);
-                $.ajax({
-                    url: "/ajax?act=del&id=" + o + "&f=" + f, success: function (ret) {
+                doAjax("del", "id=" + o + "&f=" + f, function (ret) {
                         if (ret == "ok")
                             showTip("删除任务成功.", 1);
                         else
                             showTip("删除任务失败.", 3);
                         showTasks(true);
                     },
-                    error: function () {
+                    function () {
                         showTip("请求后端失败.", 3);
                         showTasks(true);
-                    }
-                });
+                    });
             }
         }
 
@@ -384,6 +364,7 @@
         }
 
         var tips = 0;
+
         function showTip(text, m) {
             var c = "label label-";
             switch (m) {
@@ -425,6 +406,20 @@
                 $("#addTask_m").prop("checked", false);
                 $("#addTaskDialog").modal('show');
             }
+        }
+
+        function doAjax(act, args, s, e) {
+            if (args != "")
+                args = "&" + args;
+            $.ajax({
+                url: "/ajax?act=" + act + args + "&_=" + Math.random(),
+                success: function (ret) {
+                    s(ret)
+                },
+                error: function () {
+                    e();
+                }
+            });
         }
     </script>
 </head>
