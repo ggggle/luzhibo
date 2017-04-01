@@ -13,10 +13,10 @@ chmod +x $UPX
 MAKE()
 {
 	TNAME="$FNAME"_"$GOOS"_"$GOARCH"
-	LDFLAGS=\"-s -w\"
+	LDFLAGS="\"-s -w\""
 	if [ "$GOOS" = "windows" ]; then
 		TNAME=$TNAME.exe
-		LDFLAGS=\"-s -w -H=windowsgui\"
+		LDFLAGS="\"-s -w -H=windowsgui\""
 		GOOS=$GOOS GOARCH=$GOARCH go generate $PNAME
 	fi
 	TPATH=releases/$TNAME
