@@ -384,12 +384,12 @@ const ui_main = `<!DOCTYPE html>
             }
             $("#tiptext").attr("class", c);
             $("#tiptext").html(text);
-            $("#tipui").removeAttr("hidden");
             tips++;
             setTimeout(function () {
                 tips--;
                 if (tips == 0) {
-                    $("#tipui").attr("hidden", "hidden");
+                    $("#tiptext").attr("class", "label label-info");
+                    $("#tiptext").html("");
                 }
             }, 3000);
         }
@@ -434,7 +434,7 @@ const ui_main = `<!DOCTYPE html>
         <h4 id="uver"></h4>
         <strong><a id="uver_a" class="btn btn-link">点此下载</a></strong>
     </div>
-    <h4 style="text-align: center" hidden="hidden" id="tipui">
+    <h4 style="text-align: center">
         <span class="label label-success" id="tiptext"></span>
     </h4>
     <div class="row-fluid">
