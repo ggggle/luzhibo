@@ -389,7 +389,7 @@ const ui_main = `<!DOCTYPE html>
                 tips--;
                 if (tips == 0) {
                     $("#tiptext").attr("class", "label label-info");
-                    $("#tiptext").html("");
+                    $("#tiptext").html("准备就绪.");
                 }
             }, 3000);
         }
