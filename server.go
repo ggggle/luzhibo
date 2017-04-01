@@ -162,6 +162,9 @@ func (_ uiHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	case "/":
 		w.Header().Add("Content-Type", "text/html; charset=UTF-8")
 		w.Write([]byte(ui_main))
+	case "/hta":
+		w.Header().Add("Content-Type", "text/html; charset=UTF-8")
+		w.Write([]byte(hta))
 	case "/favicon.ico":
 		w.Header().Add("Content-Type", "image/x-icon")
 		data, _ := b64.DecodeString(favicon_ico)

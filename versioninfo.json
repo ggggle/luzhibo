@@ -3,9 +3,9 @@
 	{
 		"FileVersion": {
 			"Major": 2017,
-			"Minor": 3,
-			"Patch": 31,
-			"Build": 2
+			"Minor": 4,
+			"Patch": 1,
+			"Build": 0
 		},
 		"ProductVersion": {
 			"Major": 0,
@@ -31,7 +31,7 @@
 		"OriginalFilename": "",
 		"PrivateBuild": "",
 		"ProductName": "Luzhibo",
-		"ProductVersion": "2017.3.0.0",
+		"ProductVersion": "2017.4.0.0",
 		"SpecialBuild": ""
 	},
 	"VarFileInfo":
