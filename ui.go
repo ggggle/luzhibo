@@ -450,7 +450,7 @@ const ui_main = `<!DOCTYPE html>
                     <img src="donate.gif">
                     <img src="donate.gif">
                 </span>
-                <h3>这么好用且开源的软件,不打赏下?良心不会痛吗?!</h3>
+                <h3>这么好用的开源软件,不打赏下?良心不会痛吗?!</h3>
                 <div class="col-md-6">
                     <h4>支付宝</h4>
                     <img src="donate_alipay.png"/>
@@ -650,6 +650,7 @@ const ui_main = `<!DOCTYPE html>
 </body>
 </html>
 `
+
 const hta  = `<html>
 <head>
     <HTA:Application

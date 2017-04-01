@@ -307,14 +307,18 @@ func checkUpdate() string {
 	data, err := httpGet("https://api.github.com/repos/Baozisoftware/luzhibo/releases/latest")
 	r := strconv.Itoa(ver) + "|"
 	if err == nil {
-		reg, _ := regexp.Compile("Ver (\\d{10})")
-		data = reg.FindStringSubmatch(data)[1]
-		if v, _ := strconv.Atoi(data); v > ver {
-			url := fmt.Sprintf("https://github.com/Baozisoftware/luzhibo/releases/download/latest/luzhibo_%s_%s", runtime.GOOS, runtime.GOARCH)
-			if runtime.GOOS == "windows" {
-				url += ".exe"
+		if data != "" {
+			reg, _ := regexp.Compile("Ver (\\d{10})")
+			data = reg.FindStringSubmatch(data)[1]
+			if v, _ := strconv.Atoi(data); v > ver {
+				url := fmt.Sprintf("https://github.com/Baozisoftware/luzhibo/releases/download/latest/luzhibo_%s_%s", runtime.GOOS, runtime.GOARCH)
+				if runtime.GOOS == "windows" {
+					url += ".exe"
+				}
+				r += data + "|" + url
+			} else {
+				r += "null"
 			}
-			r += data + "|" + url
 		} else {
 			r += "null"
 		}

@@ -9,25 +9,69 @@ import (
 	"os/exec"
 	"syscall"
 	"unsafe"
+	"github.com/lxn/walk"
+	"net/http"
+	"github.com/dkua/go-ico"
+	"os"
+	"github.com/lxn/win"
 )
 
 func cmd() {
-	fmt.Scanln()
+	p := true
+	mw, _ := walk.NewMainWindow()
+	resp, _ := http.Get(webuiHost() + "/favicon.ico")
+	defer resp.Body.Close()
+	imgs, _ := ico.DecodeAll(resp.Body)
+	icon, _ := walk.NewIconFromImage(imgs.Image[6])
+	ni, _ := walk.NewNotifyIcon()
+	defer ni.Dispose()
+	ni.SetIcon(icon)
+	ni.SetToolTip(fmt.Sprintf("正在\"%d\"处监听WebUI...", port))
+	ni.MouseDown().Attach(func(x, y int, button walk.MouseButton) {
+		if button == walk.LeftButton {
+			openWebUI(!*nhta)
+		} else if button == walk.RightButton && p {
+			p = false
+			if walk.MsgBox(mw, "录直播", "退出后将停止所有正在运行的任务,确定退出?", walk.MsgBoxYesNo|walk.MsgBoxIconQuestion) == win.IDYES {
+				if proc != nil {
+					proc.Kill()
+					mw.Close()
+				}
+			}
+			p = true
+		}
+	})
+	ni.SetVisible(true)
+	ni.ShowCustom("录直播 - 软件已启动...", "左键点击重新打开WebUI,右键点击退出本软件.")
+	mw.Run()
 }
 
+var proc *os.Process
+
 func openWebUI(hta bool) {
-	u := "http://localhost"
-	if port != 80 {
-		u = fmt.Sprintf("%s:%d", u, port)
+	if proc != nil {
+		proc.Kill()
 	}
+	u := webuiHost()
 	if runtime.GOOS == "windows" && hta && checkWin10() {
-		err := exec.Command("mshta", u+"/hta").Start()
+		cmd := exec.Command("mshta", u+"/hta")
+		err := cmd.Start()
 		if err != nil {
 			browser.OpenURL(u)
+		} else {
+			proc = cmd.Process
 		}
 	} else {
 		browser.OpenURL(u)
 	}
+}
+
+func webuiHost() string {
+	u := "http://localhost"
+	if port != 80 {
+		u = fmt.Sprintf("%s:%d", u, port)
+	}
+	return u
 }
 
 func checkWin10() (ret bool) {
