@@ -44,6 +44,8 @@ go get github.com/Baozisoftware/qrcode-terminal-go
 go get github.com/mattn/go-isatty
 go get github.com/lxn/walk
 go get github.com/dkua/go-ico
+go get github.com/Knetic/govaluate
+go get github.com/lxn/win
 if [ "$1" = "init" ]; then
 	DONE
 fi
