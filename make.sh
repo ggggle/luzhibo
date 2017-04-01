@@ -42,6 +42,8 @@ go get github.com/PuerkitoBio/goquery
 go get github.com/pkg/browser
 go get github.com/Baozisoftware/qrcode-terminal-go
 go get github.com/mattn/go-isatty
+go get github.com/lxn/walk
+go get github.com/dkua/go-ico
 if [ "$1" = "init" ]; then
 	DONE
 fi
