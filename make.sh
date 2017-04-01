@@ -20,7 +20,7 @@ MAKE()
 		GOOS=$GOOS GOARCH=$GOARCH go generate $PNAME
 	fi
 	TPATH=releases/$TNAME
-	echo Building $TNAME....
+	echo Building $TNAME...
 	GOOS=$GOOS GOARCH=$GOARCH go build -ldflags="$LDFLAGS" -o $TPATH $PNAME
     if [ -f "$SPATH/resource.syso" ]; then
         rm $SPATH/resource.syso
