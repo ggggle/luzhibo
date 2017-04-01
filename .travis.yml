@@ -1,6 +1,9 @@
 language: go
 go:
     - 1.8
+before_script:
+    - go get github.com/tcnksm/ghr
+    - go get github.com/aktau/github-release
 script:
     - cd $HOME/gopath/src/github.com/Baozisoftware/luzhibo
     - chmod +x ./make.sh
