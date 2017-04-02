@@ -322,37 +322,55 @@ func httpGet(url string) (data string, err error) {
 }
 
 func checkUpdate() string {
-	data, err := httpGet("https://api.github.com/repos/Baozisoftware/luzhibo/releases/latest")
 	r := strconv.Itoa(ver) + "|"
-	if err == nil {
-		if data != "" {
-			reg, _ := regexp.Compile("Ver (\\d{10})")
-			data = reg.FindStringSubmatch(data)[1]
-			if v, _ := strconv.Atoi(data); v > ver {
-				r += data
+	if updated || updatting {
+		r += "null"
+	} else {
+		data, err := httpGet("https://api.github.com/repos/Baozisoftware/luzhibo/releases/latest")
+		if err == nil {
+			if data != "" {
+				reg, _ := regexp.Compile("Ver (\\d{10})")
+				data = reg.FindStringSubmatch(data)[1]
+				if v, _ := strconv.Atoi(data); v > ver {
+					r += data
+				} else {
+					r += "null"
+				}
 			} else {
 				r += "null"
 			}
-		} else {
-			r += "null"
 		}
 	}
 	return r
 }
 
+var updated = false
+var updatting = false
+
 func doUpdate() bool {
+	if updatting {
+		return false
+	}
+	if updated {
+		return true
+	}
+	updated = true
 	url := fmt.Sprintf("https://github.com/Baozisoftware/luzhibo/releases/download/latest/luzhibo_%s_%s", runtime.GOOS, runtime.GOARCH)
 	if runtime.GOOS == "windows" {
 		url += ".exe"
 	}
 	resp, err := http.Get(url)
 	if err != nil {
+		updatting = false
 		return false
 	}
 	defer resp.Body.Close()
 	err = update.Apply(resp.Body, update.Options{OldSavePath: ""})
 	if err != nil {
+		updatting = false
 		return false
 	}
+	updated = true
+	updatting = false
 	return true
 }

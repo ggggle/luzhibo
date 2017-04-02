@@ -29,8 +29,10 @@ func main() {
 		time.Sleep(time.Second * 5)
 		d, f := path.Split(os.Args[0])
 		tp := path.Join(d, "."+f+".old")
+		fmt.Println(tp)
 		if _, err := os.Stat(tp); err == nil {
-			os.Remove(tp)
+			err = os.Remove(tp)
+			fmt.Println(err)
 		}
 		port = *p
 	}()
