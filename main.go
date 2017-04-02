@@ -10,7 +10,6 @@ import (
 	"strconv"
 	"fmt"
 	"time"
-	"github.com/lxn/walk"
 )
 
 const ver = 2017040200
@@ -31,7 +30,7 @@ func main() {
 		d, f := path.Split(os.Args[0])
 		tp := path.Join(d, "."+f+".old")
 		if _, err := os.Stat(tp); err == nil {
-			walk.MsgBox(nil, "", tp, 0)
+			fmt.Println(tp)
 			os.Remove(tp)
 		}
 		port = *p
