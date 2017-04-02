@@ -12,7 +12,7 @@ import (
 	"time"
 )
 
-const ver = 2017040200
+const ver = 2017040100
 const p = "录直播"
 
 var port = 12216
@@ -28,7 +28,7 @@ func main() {
 	go func() {
 		time.Sleep(time.Second * 5)
 		d, f := path.Split(os.Args[0])
-		tp := path.Join(d, "."+f)
+		tp := path.Join(d, "."+f+".old")
 		if _, err := os.Stat(tp); err == nil {
 			os.Remove(tp)
 		}
