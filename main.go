@@ -33,6 +33,7 @@ func main() {
 		proc, err := os.FindProcess(*pid)
 		if err == nil {
 			proc.Kill()
+			time.Sleep(time.Second * 2)
 		}
 	}
 	go func() {
