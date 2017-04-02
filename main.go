@@ -27,14 +27,15 @@ func main() {
 	nhta = flag.Bool("nhta", false, "禁用hta(仅Windows有效)")
 	pid := flag.Int("pid", 0, "pid")
 	flag.Parse()
+	fmt.Println(os.Args)
 	runtime.GOMAXPROCS(runtime.NumCPU())
-	go func() {
-		if *pid != 0 {
-			proc, err := os.FindProcess(*pid)
-			if err == nil {
-				proc.Kill()
-			}
+	if *pid != 0 {
+		proc, err := os.FindProcess(*pid)
+		if err == nil {
+			proc.Kill()
 		}
+	}
+	go func() {
 		time.Sleep(time.Second * 5)
 		d, f := filepath.Split(os.Args[0])
 		tp := filepath.Join(d, "."+f+".old")

@@ -379,8 +379,9 @@ func doUpdate() bool {
 		args := os.Args
 		args = append(args, "-pid")
 		args = append(args, strconv.Itoa(os.Getpid()))
-		os.StartProcess(args[0], args[1:], nil)
-		os.Exit(0)
+		procAttr := new(os.ProcAttr)
+		procAttr.Files = []*os.File{os.Stdin, os.Stdout, os.Stderr}
+		os.StartProcess(args[0], args, procAttr)
 	}
 	return true
 }
