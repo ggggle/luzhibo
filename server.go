@@ -372,5 +372,15 @@ func doUpdate() bool {
 	}
 	updated = true
 	updatting = false
+	if len(tasks) == 0 {
+		if htaproc != nil {
+			htaproc.Kill()
+		}
+		args := os.Args
+		args = append(args, "-pid")
+		args = append(args, strconv.Itoa(os.Getpid()))
+		os.StartProcess(args[0], args[1:], nil)
+		os.Exit(0)
+	}
 	return true
 }

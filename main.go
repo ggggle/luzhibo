@@ -19,13 +19,22 @@ var port = 12216
 
 var nhta *bool
 
+var htaproc *os.Process
+
 func main() {
 	p := flag.Int("port", port, "WebUI监听端口")
 	nopen := flag.Bool("nopenui", false, "不自动打开WebUI")
 	nhta = flag.Bool("nhta", false, "禁用hta(仅Windows有效)")
+	pid := flag.Int("nhta", 0, "pid")
 	flag.Parse()
 	runtime.GOMAXPROCS(runtime.NumCPU())
 	go func() {
+		if *pid != 0 {
+			proc, err := os.FindProcess(*pid)
+			if err == nil {
+				proc.Kill()
+			}
+		}
 		time.Sleep(time.Second * 5)
 		d, f := filepath.Split(os.Args[0])
 		tp := filepath.Join(d, "."+f+".old")

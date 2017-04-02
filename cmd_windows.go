@@ -12,7 +12,6 @@ import (
 	"github.com/lxn/walk"
 	"net/http"
 	"github.com/dkua/go-ico"
-	"os"
 	"github.com/lxn/win"
 )
 
@@ -33,8 +32,8 @@ func cmd() {
 		} else if button == walk.RightButton && p {
 			p = false
 			if walk.MsgBox(mw, "录直播", "退出后将停止所有正在运行的任务,确定退出?", walk.MsgBoxYesNo|walk.MsgBoxIconQuestion) == win.IDYES {
-				if proc != nil {
-					proc.Kill()
+				if htaproc != nil {
+					htaproc.Kill()
 				}
 				mw.Close()
 			}
@@ -46,11 +45,9 @@ func cmd() {
 	mw.Run()
 }
 
-var proc *os.Process
-
 func openWebUI(hta bool) {
-	if proc != nil {
-		proc.Kill()
+	if htaproc != nil {
+		htaproc.Kill()
 	}
 	u := webuiHost()
 	if runtime.GOOS == "windows" && hta && checkWin10() {
@@ -59,7 +56,7 @@ func openWebUI(hta bool) {
 		if err != nil {
 			browser.OpenURL(u)
 		} else {
-			proc = cmd.Process
+			htaproc = cmd.Process
 		}
 	} else {
 		browser.OpenURL(u)
