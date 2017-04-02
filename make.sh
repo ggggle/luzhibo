@@ -18,15 +18,14 @@ MAKE()
 		TNAME=$TNAME.exe
 		LDFLAGS="-s -w -H=windowsgui"
 		GOOS=$GOOS GOARCH=$GOARCH go generate $PNAME
+		TPATH=releases/$TNAME
+        echo Building $TNAME...
+        GOOS=$GOOS GOARCH=$GOARCH go build -ldflags="$LDFLAGS" -o $TPATH $PNAME
+        if [ -f "$SPATH/resource.syso" ]; then
+            rm $SPATH/resource.syso
+        fi
+        $UPX --best -q $TPATH
 	fi
-	TPATH=releases/$TNAME
-	echo Building $TNAME...
-	GOOS=$GOOS GOARCH=$GOARCH go build -ldflags="$LDFLAGS" -o $TPATH $PNAME
-    if [ -f "$SPATH/resource.syso" ]; then
-        rm $SPATH/resource.syso
-    fi
-	$UPX --best -q $TPATH
-	
 }
 
 DONE()
