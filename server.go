@@ -354,7 +354,7 @@ func doUpdate() bool {
 	if updated {
 		return true
 	}
-	updated = true
+	updatting = true
 	url := fmt.Sprintf("https://github.com/Baozisoftware/luzhibo/releases/download/latest/luzhibo_%s_%s", runtime.GOOS, runtime.GOARCH)
 	if runtime.GOOS == "windows" {
 		url += ".exe"
