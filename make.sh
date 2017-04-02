@@ -16,7 +16,7 @@ MAKE()
 	LDFLAGS="-s -w"
 	if [ "$GOOS" = "windows" ]; then
 		TNAME=$TNAME.exe
-		#LDFLAGS="-s -w -H=windowsgui"
+		LDFLAGS="-s -w -H=windowsgui"
 		GOOS=$GOOS GOARCH=$GOARCH go generate $PNAME
 		TPATH=releases/$TNAME
         echo Building $TNAME...
