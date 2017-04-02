@@ -25,7 +25,7 @@ func main() {
 	p := flag.Int("port", port, "WebUI监听端口")
 	nopen := flag.Bool("nopenui", false, "不自动打开WebUI")
 	nhta = flag.Bool("nhta", false, "禁用hta(仅Windows有效)")
-	pid := flag.Int("nhta", 0, "pid")
+	pid := flag.Int("pid", 0, "pid")
 	flag.Parse()
 	runtime.GOMAXPROCS(runtime.NumCPU())
 	go func() {
