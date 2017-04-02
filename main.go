@@ -27,7 +27,6 @@ func main() {
 	nhta = flag.Bool("nhta", false, "禁用hta(仅Windows有效)")
 	pid := flag.Int("pid", 0, "pid")
 	flag.Parse()
-	fmt.Println(os.Args)
 	runtime.GOMAXPROCS(runtime.NumCPU())
 	if *pid != 0 {
 		proc, err := os.FindProcess(*pid)
