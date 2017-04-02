@@ -14,6 +14,8 @@ import (
 	"github.com/dkua/go-ico"
 	"os"
 	"github.com/lxn/win"
+	"time"
+	"path"
 )
 
 func cmd() {
@@ -43,6 +45,16 @@ func cmd() {
 	})
 	ni.SetVisible(true)
 	ni.ShowCustom("录直播 - 软件已启动...", "左键点击重新打开WebUI,右键点击退出本软件.")
+	go func() {
+		time.Sleep(time.Second * 5)
+		d, f := path.Split(os.Args[0])
+		walk.MsgBox(mw, d, f, 0)
+		tp := path.Join(d, "."+f+".old")
+		if _, err := os.Stat(tp); err == nil {
+			walk.MsgBox(mw, os.Args[0], tp, 0)
+			os.Remove(tp)
+		}
+	}()
 	mw.Run()
 }
 
