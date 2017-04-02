@@ -18,6 +18,7 @@ import (
 	"encoding/base64"
 	"strings"
 	nurl "net/url"
+	"github.com/inconshreveable/go-update"
 )
 
 type checkRet struct {
@@ -152,6 +153,14 @@ func (_ ajaxHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		lines := api.GetSupports()
 		s := strings.Join(lines, "/")
 		w.Write([]byte(s))
+		return
+	case "update":
+		b := doUpdate()
+		r := "false"
+		if b {
+			r = "true"
+		}
+		w.Write([]byte(r))
 		return
 	}
 	w.Write([]byte(""))
@@ -320,11 +329,7 @@ func checkUpdate() string {
 			reg, _ := regexp.Compile("Ver (\\d{10})")
 			data = reg.FindStringSubmatch(data)[1]
 			if v, _ := strconv.Atoi(data); v > ver {
-				url := fmt.Sprintf("https://github.com/Baozisoftware/luzhibo/releases/download/latest/luzhibo_%s_%s", runtime.GOOS, runtime.GOARCH)
-				if runtime.GOOS == "windows" {
-					url += ".exe"
-				}
-				r += data + "|" + url
+				r += data
 			} else {
 				r += "null"
 			}
@@ -333,4 +338,21 @@ func checkUpdate() string {
 		}
 	}
 	return r
+}
+
+func doUpdate() bool {
+	url := fmt.Sprintf("https://github.com/Baozisoftware/luzhibo/releases/download/latest/luzhibo_%s_%s", runtime.GOOS, runtime.GOARCH)
+	if runtime.GOOS == "windows" {
+		url += ".exe"
+	}
+	resp, err := http.Get(url)
+	if err != nil {
+		return false
+	}
+	defer resp.Body.Close()
+	err = update.Apply(resp.Body, update.Options{OldSavePath: ""})
+	if err != nil {
+		return false
+	}
+	return true
 }

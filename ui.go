@@ -163,9 +163,17 @@ const ui_main = `<!DOCTYPE html>
                         $("#uver").text("发现新版本(Ver " + arr[1] + ")");
                         $("#uver_tip").removeAttr("hidden");
                         $("#uver_a").click(function () {
-                                window.open(arr[2], "_parent");
-                            }
-                        );
+                            $("#uver_tip").attr("hidden", "hidden");
+                            $("button").attr("disabled", "disabled");
+                            showTip("自动更新中...", 1);
+                            doAjax("update", function () {
+                                showTip("自动更新失败.", 2);
+                                $("button").removeAttr("disabled");
+                            }, function () {
+                                showTip("自动更新成功,下次启动将使用新版.", 1);
+                                $("button").removeAttr("disabled");
+                            });
+                        });
                     }
                     showTip("获取版本信息成功.", 1);
                     showSupports();
@@ -175,8 +183,11 @@ const ui_main = `<!DOCTYPE html>
                     showTip("获取版本信息失败.", 2);
                     showSupports();
                     showTasks();
-                });
-        });
+                }
+            )
+            ;
+        })
+        ;
 
         function doAddTask() {
             var url = $("#addTask_url").val();
@@ -437,10 +448,10 @@ const ui_main = `<!DOCTYPE html>
          hidden="hidden">
         <button type="button" class="close" data-dismiss="alert">×</button>
         <h4 id="uver"></h4>
-        <strong><a id="uver_a" class="btn btn-link">点此下载</a></strong>
+        <strong><a id="uver_a" class="btn btn-link">点此更新</a></strong>
     </div>
     <h4 style="text-align: center">
-        <span class="label label-success" id="tiptext">准备就绪.</span>
+        <span class="label label-success" id="tiptext"></span>
     </h4>
     <div class="row-fluid">
         <div class="span12 ">
