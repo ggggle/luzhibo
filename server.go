@@ -17,6 +17,7 @@ import (
 	"runtime"
 	"encoding/base64"
 	"strings"
+	nurl "net/url"
 )
 
 type checkRet struct {
@@ -71,6 +72,8 @@ func (_ ajaxHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	case "add":
 		url, m, p, s := r.Form.Get("url"), r.Form.Get("m"), r.Form.Get("path"), r.Form.Get("run")
+		url, _ = nurl.QueryUnescape(url)
+		p, _ = nurl.QueryUnescape(p)
 		mm, ss := m == "true", s == "true"
 		if url != "" && p != "" {
 			if addTaskEx(url, p, mm, ss) {
@@ -80,6 +83,7 @@ func (_ ajaxHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		}
 	case "addex":
 		urls := r.Form.Get("urls")
+		urls, _ = nurl.QueryUnescape(urls)
 		i := addTasks(urls)
 		w.Write([]byte(strconv.Itoa(i)))
 	case "del":
@@ -136,7 +140,7 @@ func (_ ajaxHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 				}
 				pp += "." + inf.FileExt
 			}
-			w.Header().Add("Content-Disposition", "attachment; filename=\""+pp+"\"")
+			w.Header().Add("Content-Disposition", "attachment; filename=\""+nurl.QueryEscape(pp)+"\"")
 			w.Header().Add("Content-Type", "video/x-"+inf.FileExt)
 			getAct(fp, w)
 		}
@@ -160,8 +164,13 @@ func (_ uiHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	b64 := base64.StdEncoding
 	switch r.URL.Path {
 	case "/":
+		h := ui_main
+		r.ParseForm()
+		if r.Form.Get("hta") == "true" {
+			h = strings.Replace(h, "hta = false", "hta = true", 1)
+		}
 		w.Header().Add("Content-Type", "text/html; charset=UTF-8")
-		w.Write([]byte(ui_main))
+		w.Write([]byte(h))
 	case "/hta":
 		w.Header().Add("Content-Type", "text/html; charset=UTF-8")
 		w.Write([]byte(hta))

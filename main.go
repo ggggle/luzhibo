@@ -10,7 +10,7 @@ import (
 	"strconv"
 )
 
-const ver = 2017040100
+const ver = 2017040200
 const p = "录直播"
 
 var port=12216

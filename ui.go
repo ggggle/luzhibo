@@ -54,6 +54,7 @@ const ui_main = `<!DOCTYPE html>
 
         var theTasks = null;
         function showTasks(s) {
+            var hta = false;
             $("button").attr("disabled", "disabled");
             $("#tasklist").html("");
             var cf = 0;
@@ -84,23 +85,25 @@ const ui_main = `<!DOCTYPE html>
                                     buttons += "<button onclick=\"startBtnEvt(" + (i + 1) + ")\" class=\"btn btn-success\" type=\"button\"><span class=\"glyphicon glyphicon-play\" /> 开始</button>\n";
                                     buttons += "<button onclick=\"delBtnEvt(" + (i + 1) + ")\" class=\"btn btn-danger\" type=\"button\"><span class=\"glyphicon glyphicon-remove\" /> 删除</button>\n";
                                 }
-                                if (v.Files != null) {
-                                    if (v.Files.length == 1) {
-                                        buttons += "<button onclick=\"down(" + (i + 1) + ",0)\" class=\"btn btn-primary\" type=\"button\"><span class=\"glyphicon glyphicon-download\" /> 下载</button>\n";
-                                        if (v.FileExt == "flv")
-                                            buttons += "<button onclick=\"play(" + (i + 1) + ",0)\" class=\"btn btn-primary\" type=\"button\"><span class=\"glyphicon glyphicon-play-circle\" />  播放</button>\n";
-                                    } else {
-                                        var dlBtn = "<div class=\"btn-group\"><button type=\"button\" class=\"btn btn-primary dropdown-toggle\" data-toggle=\"dropdown\"><span class=\"glyphicon glyphicon-download\" /> 下载 <span class=\"caret\"></span></button><ul class=\"dropdown-menu\" role=\"menu\">";
-                                        var pyBtn = "<div class=\"btn-group\"><button type=\"button\" class=\"btn btn-primary dropdown-toggle\" data-toggle=\"dropdown\"><span class=\"glyphicon glyphicon-play-circle\" /> 播放 <span class=\"caret\"></span></button><ul class=\"dropdown-menu\" role=\"menu\">";
-                                        for (var x = 0; x < v.Files.length; x++) {
-                                            dlBtn += "<li onclick=\"down(" + (i + 1) + "," + (x + 1) + ")\"><button class=\"btn btn-link\"><span class=\"glyphicon glyphicon-download-alt\" /> 分段" + (x + 1) + "</a></li>";
-                                            pyBtn += "<li onclick=\"play(" + (i + 1) + "," + (x + 1) + ")\"><button class=\"btn btn-link\"><span class=\"glyphicon glyphicon-play\" /> 分段" + (x + 1) + "</a></li>";
-                                        }
-                                        dlBtn += "</ul></div>\n";
-                                        pyBtn += "</ul></div>\n";
-                                        buttons += dlBtn;
-                                        if (v.FileExt == "flv") {
-                                            buttons += pyBtn;
+                                if (!hta) {
+                                    if (v.Files != null) {
+                                        if (v.Files.length == 1) {
+                                            buttons += "<button onclick=\"down(" + (i + 1) + ",0)\" class=\"btn btn-primary\" type=\"button\"><span class=\"glyphicon glyphicon-download\" /> 下载</button>\n";
+                                            if (v.FileExt == "flv")
+                                                buttons += "<button onclick=\"play(" + (i + 1) + ",0)\" class=\"btn btn-primary\" type=\"button\"><span class=\"glyphicon glyphicon-play-circle\" />  播放</button>\n";
+                                        } else {
+                                            var dlBtn = "<div class=\"btn-group\"><button type=\"button\" class=\"btn btn-primary dropdown-toggle\" data-toggle=\"dropdown\"><span class=\"glyphicon glyphicon-download\" /> 下载 <span class=\"caret\"></span></button><ul class=\"dropdown-menu\" role=\"menu\">";
+                                            var pyBtn = "<div class=\"btn-group\"><button type=\"button\" class=\"btn btn-primary dropdown-toggle\" data-toggle=\"dropdown\"><span class=\"glyphicon glyphicon-play-circle\" /> 播放 <span class=\"caret\"></span></button><ul class=\"dropdown-menu\" role=\"menu\">";
+                                            for (var x = 0; x < v.Files.length; x++) {
+                                                dlBtn += "<li onclick=\"down(" + (i + 1) + "," + (x + 1) + ")\"><button class=\"btn btn-link\"><span class=\"glyphicon glyphicon-download-alt\" /> 分段" + (x + 1) + "</a></li>";
+                                                pyBtn += "<li onclick=\"play(" + (i + 1) + "," + (x + 1) + ")\"><button class=\"btn btn-link\"><span class=\"glyphicon glyphicon-play\" /> 分段" + (x + 1) + "</a></li>";
+                                            }
+                                            dlBtn += "</ul></div>\n";
+                                            pyBtn += "</ul></div>\n";
+                                            buttons += dlBtn;
+                                            if (v.FileExt == "flv") {
+                                                buttons += pyBtn;
+                                            }
                                         }
                                     }
                                 }
@@ -196,6 +199,8 @@ const ui_main = `<!DOCTYPE html>
                         return;
                     }
                     showTip("正在添加任务...", 0);
+                    url = encodeURIComponent(url);
+                    tp = encodeURIComponent(tp);
                     doAjax("add", "url=" + url + "&path=" + tp + "&m=" + m + "&run=" + r,
                         function (ret) {
                             if (ret == "ok")
@@ -389,7 +394,7 @@ const ui_main = `<!DOCTYPE html>
                 tips--;
                 if (tips == 0) {
                     $("#tiptext").attr("class", "label label-info");
-                    $("#tiptext").html("准备就绪.");
+                    $("#tiptext").html("");
                 }
             }, 3000);
         }
@@ -657,7 +662,7 @@ const hta  = `<html>
             icon="favicon.ico"
             contextmenu="no"
             navigable="yes"/>
-    <meta http-equiv="refresh" content="0;url=/">
+    <meta http-equiv="refresh" content="0;url=/?hta=true">
 </head>
 </html>`
 

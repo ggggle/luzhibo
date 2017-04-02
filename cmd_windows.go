@@ -35,8 +35,8 @@ func cmd() {
 			if walk.MsgBox(mw, "录直播", "退出后将停止所有正在运行的任务,确定退出?", walk.MsgBoxYesNo|walk.MsgBoxIconQuestion) == win.IDYES {
 				if proc != nil {
 					proc.Kill()
-					mw.Close()
 				}
+				mw.Close()
 			}
 			p = true
 		}
