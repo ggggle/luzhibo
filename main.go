@@ -26,6 +26,7 @@ func main() {
 	nopen := flag.Bool("nopenui", false, "不自动打开WebUI")
 	nhta = flag.Bool("nhta", false, "禁用hta(仅Windows有效)")
 	pid := flag.Int("pid", 0, "pid")
+	m := flag.String("m", "", "守护程序(如screen)")
 	flag.Parse()
 	runtime.GOMAXPROCS(runtime.NumCPU())
 	if *pid != 0 {
@@ -34,6 +35,9 @@ func main() {
 			proc.Kill()
 			time.Sleep(time.Second * 2)
 		}
+	}
+	if *m != "" {
+
 	}
 	go func() {
 		time.Sleep(time.Second * 5)
@@ -49,4 +53,19 @@ func main() {
 		openWebUI(!*nhta)
 	}
 	cmd()
+}
+
+func startProc(name string, args []string) error {
+	procAttr := new(os.ProcAttr)
+	procAttr.Files = []*os.File{os.Stdin, os.Stdout, os.Stderr}
+	p, err := filepath.Abs(name)
+	if err != nil {
+		return err
+	}
+	ta := []string{p}
+	if len(args) > 0 {
+		copy(ta, args)
+	}
+	_, err = os.StartProcess(p, ta, procAttr)
+	return err
 }

@@ -19,7 +19,6 @@ import (
 	"strings"
 	nurl "net/url"
 	"github.com/inconshreveable/go-update"
-	"path/filepath"
 )
 
 type checkRet struct {
@@ -378,12 +377,10 @@ func doUpdate() bool {
 			htaproc.Kill()
 		}
 		args := os.Args
+		n := args[0]
 		args = append(args, "-pid")
 		args = append(args, strconv.Itoa(os.Getpid()))
-		procAttr := new(os.ProcAttr)
-		procAttr.Files = []*os.File{os.Stdin, os.Stdout, os.Stderr}
-		p,_:=filepath.Abs(args[0])
-		os.StartProcess(p, args, procAttr)
+		startProc(n, args[1:])
 	}
 	return true
 }
