@@ -19,6 +19,7 @@ import (
 	"strings"
 	nurl "net/url"
 	"github.com/inconshreveable/go-update"
+	"path/filepath"
 )
 
 type checkRet struct {
@@ -381,7 +382,8 @@ func doUpdate() bool {
 		args = append(args, strconv.Itoa(os.Getpid()))
 		procAttr := new(os.ProcAttr)
 		procAttr.Files = []*os.File{os.Stdin, os.Stdout, os.Stderr}
-		os.StartProcess(args[0], args, procAttr)
+		p,_:=filepath.Abs(args[0])
+		os.StartProcess(p, args, procAttr)
 	}
 	return true
 }
