@@ -64,7 +64,7 @@ func startProc(name string, args []string) error {
 	}
 	ta := []string{p}
 	if len(args) > 0 {
-		copy(ta, args)
+		ta = append(ta, args...)
 	}
 	_, err = os.StartProcess(p, ta, procAttr)
 	return err
