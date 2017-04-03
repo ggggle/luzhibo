@@ -372,11 +372,13 @@ func doUpdate() bool {
 	}
 	updated = true
 	updatting = false
-	if len(tasks) == 0 {
-		if htaproc != nil {
-			htaproc.Kill()
+	if runtime.GOOS == "windows" {
+		if len(tasks) == 0 {
+			if htaproc != nil {
+				htaproc.Kill()
+			}
+			restartSelf()
 		}
-		restartSelf()
 	}
 	return true
 }
