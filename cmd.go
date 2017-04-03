@@ -29,25 +29,26 @@ func cmd() {
 		fmt.Println("4.打开WebUI(仅部分平台适用)")
 		fmt.Println("5.退出程序")
 		fmt.Print("请输入:")
+		var o int64
 		for {
-			var o int64
 			fmt.Scanf("%d\n", &o)
-			switch o {
-			case 0:
-				continue
-			case 1:
-				add(false)
-			case 2:
-				add(true)
-			case 3:
-				show()
-			case 4:
-				openWebUI(!*nhta)
-			case 5:
-				return
-			default:
-				fmt.Println("输入错误,请重试!")
+			if o != 0 {
+				break
 			}
+		}
+		switch o {
+		case 1:
+			add(false)
+		case 2:
+			add(true)
+		case 3:
+			show()
+		case 4:
+			openWebUI(!*nhta)
+		case 5:
+			return
+		default:
+			fmt.Println("输入错误,请重试!")
 		}
 	}
 }
