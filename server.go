@@ -376,11 +376,14 @@ func doUpdate() bool {
 		if htaproc != nil {
 			htaproc.Kill()
 		}
-		args := os.Args
-		n := args[0]
-		args = append(args, "-pid")
-		args = append(args, strconv.Itoa(os.Getpid()))
-		startProc(n, args[1:])
+		restartSelf()
 	}
 	return true
+}
+
+func restartSelf() {
+	args := os.Args
+	n := args[0]
+	args = append(args, "-pid", strconv.Itoa(os.Getpid()))
+	startProc(n, args)
 }

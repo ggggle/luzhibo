@@ -26,7 +26,6 @@ func main() {
 	nopen := flag.Bool("nopenui", false, "不自动打开WebUI")
 	nhta = flag.Bool("nhta", false, "禁用hta(仅Windows有效)")
 	pid := flag.Int("pid", 0, "pid")
-	m := flag.String("m", "", "守护程序(如screen)")
 	flag.Parse()
 	runtime.GOMAXPROCS(runtime.NumCPU())
 	if *pid != 0 {
@@ -35,9 +34,6 @@ func main() {
 			proc.Kill()
 			time.Sleep(time.Second * 2)
 		}
-	}
-	if *m != "" {
-
 	}
 	go func() {
 		time.Sleep(time.Second * 5)
@@ -62,10 +58,6 @@ func startProc(name string, args []string) error {
 	if err != nil {
 		return err
 	}
-	ta := []string{p}
-	if len(args) > 0 {
-		ta = append(ta, args...)
-	}
-	_, err = os.StartProcess(p, ta, procAttr)
+	_, err = os.StartProcess(p, args, procAttr)
 	return err
 }
