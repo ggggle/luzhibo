@@ -20,6 +20,7 @@ import (
 	nurl "net/url"
 	"github.com/inconshreveable/go-update"
 	"path/filepath"
+	"github.com/jpillora/overseer"
 )
 
 type checkRet struct {
@@ -373,32 +374,24 @@ func doUpdate() bool {
 	}
 	updated = true
 	updatting = false
-	if runtime.GOOS == "windows" {
-		if len(tasks) == 0 {
-			if htaproc != nil {
-				htaproc.Kill()
-			}
-			restartSelf()
+	if len(tasks) == 0 {
+		if htaproc != nil {
+			htaproc.Kill()
 		}
+		restartSelf()
 	}
 	return true
 }
 
 func restartSelf() {
-	args := os.Args
-	n := args[0]
-	for i, v := range args {
-		if v == "-pid" {
-			args[i] = ""
-			args[i+1] = ""
-		}
-		if strings.HasPrefix(v, "-pid=") {
-			args[i] = ""
-		}
+	if runtime.GOOS == "windows" {
+		args := os.Args
+		n := args[0]
+		startProc(n, args)
+		os.Exit(0)
+	} else {
+		overseer.Restart()
 	}
-	args = append(args, "-pid", strconv.Itoa(os.Getpid()))
-	startProc(n, args)
-	os.Exit(0)
 }
 
 func startProc(name string, args []string) error {
