@@ -295,7 +295,6 @@ func startServer(s string) {
 	http.Handle("/flv.min.css", uiHandler{})
 	http.Handle("/ajax", ajaxHandler{})
 	http.ListenAndServe(s, nil)
-	fmt.Println("WebUI已停止.")
 	os.Exit(0)
 }
 
