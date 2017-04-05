@@ -59,7 +59,7 @@ func main() {
 		os.Remove(tp)
 	}()
 	fmt.Printf("正在\"%s\"处监听WebUI...\n", s)
-	if !*nt && runtime.GOOS != "windows" {
+	if !*nt || runtime.GOOS == "windows" {
 		time.Sleep(time.Second * 2)
 		go startServer(s)
 		if !*nopen {
