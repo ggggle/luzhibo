@@ -383,16 +383,12 @@ func doUpdate() bool {
 }
 
 func restartSelf() {
-	args := os.Args
-	n := args[0]
-	startProc(n, args)
 	if runtime.GOOS == "windows" || *nt {
 		args := os.Args
 		n := args[0]
 		startProc(n, args)
 		os.Exit(0)
 	}
-	os.Exit(0)
 }
 
 func startProc(name string, args []string) error {
