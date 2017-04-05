@@ -17,6 +17,7 @@ go get github.com/Baozisoftware/qrcode-terminal-go
 go get github.com/lxn/walk
 go get github.com/dkua/go-ico
 go get github.com/inconshreveable/go-update
+go get github.com/Baozisoftware/GoldenDaemon
 if "%1%"=="init" goto done
 
 if "%GOPATH%"=="" set GOPATH=%UserProfile%\go

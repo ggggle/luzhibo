@@ -10,7 +10,7 @@ import (
 	"time"
 	"os"
 	"path/filepath"
-	"os/exec"
+	"github.com/Baozisoftware/GoldenDaemon"
 )
 
 const ver = 2017040500
@@ -28,28 +28,13 @@ func main() {
 	p := flag.Int("port", port, "WebUI监听端口")
 	nopen := flag.Bool("nopenui", false, "不自动打开WebUI")
 	nhta = flag.Bool("nhta", false, "禁用hta(仅Windows有效)")
-	d := flag.Bool("d", false, "启用后台运行(仅非Windows有效)")
+	flag.Bool("d", false, "启用后台运行(仅非Windows有效)")
 	nt = flag.Bool("nt", false, "启用无终端交互模式(仅非Windows有效)")
 	flag.Parse()
 	port = *p
 	s := ":" + strconv.Itoa(port)
-	if *d && runtime.GOOS != "windows" {
-		args := os.Args[1:]
-		for i, v := range args {
-			if v == "-d" || v == "-d=true" {
-				args[i] = "-d=false"
-			}
-		}
-		args = append(args, "-nt")
-		cmd := exec.Command(os.Args[0], args...)
-		cmd.Start()
-		if cmd.Process != nil {
-			fmt.Printf("[PID]%d\n", cmd.Process.Pid)
-			fmt.Printf("[WebUI]\"%s\"\n", s)
-		} else {
-			fmt.Println("后台启动失败.")
-		}
-		os.Exit(0)
+	if runtime.GOOS != "windows" {
+		GoldenDaemon.RegisterTrigger("d", "-nt")
 	}
 	runtime.GOMAXPROCS(runtime.NumCPU())
 	go func() {

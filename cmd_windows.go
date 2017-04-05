@@ -27,7 +27,7 @@ func cmd() {
 	ni.SetIcon(icon)
 	ni.SetToolTip(fmt.Sprintf("正在\"%d\"处监听WebUI...", port))
 	ni.MouseDown().Attach(func(x, y int, button walk.MouseButton) {
-		if button == walk.LeftButton {
+		if button == walk.LeftButton && p {
 			openWebUI(!*nhta)
 		} else if button == walk.RightButton && p {
 			p = false

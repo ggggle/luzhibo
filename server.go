@@ -19,7 +19,7 @@ import (
 	"strings"
 	nurl "net/url"
 	"github.com/inconshreveable/go-update"
-	"path/filepath"
+	"github.com/Baozisoftware/GoldenDaemon"
 )
 
 type checkRet struct {
@@ -374,9 +374,6 @@ func doUpdate() bool {
 	updated = true
 	updatting = false
 	if len(tasks) == 0 {
-		if htaproc != nil {
-			htaproc.Kill()
-		}
 		restartSelf()
 	}
 	return true
@@ -384,20 +381,9 @@ func doUpdate() bool {
 
 func restartSelf() {
 	if runtime.GOOS == "windows" || *nt {
-		args := os.Args
-		n := args[0]
-		startProc(n, args)
-		os.Exit(0)
+		if htaproc != nil {
+			htaproc.Kill()
+		}
+		GoldenDaemon.RestartSelf()
 	}
-}
-
-func startProc(name string, args []string) error {
-	procAttr := new(os.ProcAttr)
-	procAttr.Files = []*os.File{os.Stdin, os.Stdout, os.Stderr}
-	p, err := filepath.Abs(name)
-	if err != nil {
-		return err
-	}
-	_, err = os.StartProcess(p, args, procAttr)
-	return err
 }
