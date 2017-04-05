@@ -13,7 +13,7 @@ import (
 	"os/exec"
 )
 
-const ver = 2017040300
+const ver = 2017040500
 const p = "录直播"
 
 var port = 12216
