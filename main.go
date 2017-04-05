@@ -28,12 +28,12 @@ func main() {
 	p := flag.Int("port", port, "WebUI监听端口")
 	nopen := flag.Bool("nopenui", false, "不自动打开WebUI")
 	nhta = flag.Bool("nhta", false, "禁用hta(仅Windows有效)")
-	d := flag.Bool("d", false, "启用后台运行")
-	nt = flag.Bool("nt", false, "启用无终端交互模式")
+	d := flag.Bool("d", false, "启用后台运行(仅非Windows有效)")
+	nt = flag.Bool("nt", false, "启用无终端交互模式(仅非Windows有效)")
 	flag.Parse()
 	port = *p
 	s := ":" + strconv.Itoa(port)
-	if *d {
+	if *d && runtime.GOOS != "windows" {
 		args := os.Args[1:]
 		for i, v := range args {
 			if v == "-d" || v == "-d=true" {
@@ -59,7 +59,7 @@ func main() {
 		os.Remove(tp)
 	}()
 	fmt.Printf("正在\"%s\"处监听WebUI...\n", s)
-	if !*nt {
+	if !*nt && runtime.GOOS != "windows" {
 		time.Sleep(time.Second * 2)
 		go startServer(s)
 		if !*nopen {
