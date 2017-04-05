@@ -170,7 +170,10 @@
                             }, function () {
                                 showTip("自动更新成功,下次启动将使用新版.", 1);
                                 $("button").removeAttr("disabled");
-                            });
+                            }, function () {
+                                showTip("自动更新成功,下次启动将使用新版.", 1);
+                                $("button").removeAttr("disabled");
+                            }, 20000);
                         });
                     }
                     showTip("获取版本信息成功.", 1);
@@ -424,17 +427,24 @@
             }
         }
 
-        function doAjax(act, args, s, e) {
+        function doAjax(act, args, s, e, c, t) {
+            if (t == undefined)
+                t = -1;
             if (args != "")
                 args = "&" + args;
             $.ajax({
                 url: "/ajax?act=" + act + args + "&_=" + Math.random(),
                 success: function (ret) {
-                    s(ret)
+                    s(ret);
                 },
                 error: function () {
                     e();
-                }
+                },
+                complete: function () {
+                    if (s != undefined)
+                        c();
+                },
+                timeout: t
             });
         }
     </script>

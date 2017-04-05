@@ -60,6 +60,7 @@ func main() {
 	}()
 	fmt.Printf("正在\"%s\"处监听WebUI...\n", s)
 	if !*nt {
+		time.Sleep(time.Second * 2)
 		go startServer(s)
 		if !*nopen {
 			openWebUI(!*nhta)
