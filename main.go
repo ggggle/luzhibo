@@ -11,7 +11,6 @@ import (
 	"os"
 	"path/filepath"
 	"os/exec"
-	"github.com/jpillora/overseer"
 )
 
 const ver = 2017040300
@@ -23,22 +22,14 @@ var nhta *bool
 
 var htaproc *os.Process
 
-func main() {
-	if runtime.GOOS == "windows" {
-		mainFunc()
-	} else {
-		overseer.Run(overseer.Config{Program: func(state overseer.State) {
-			mainFunc()
-		}})
-	}
-}
+var nt *bool
 
-func mainFunc() {
+func main() {
 	p := flag.Int("port", port, "WebUI监听端口")
 	nopen := flag.Bool("nopenui", false, "不自动打开WebUI")
 	nhta = flag.Bool("nhta", false, "禁用hta(仅Windows有效)")
 	d := flag.Bool("d", false, "启用后台运行")
-	nt := flag.Bool("nt", false, "启用无终端交互模式")
+	nt = flag.Bool("nt", false, "启用无终端交互模式")
 	flag.Parse()
 	port = *p
 	s := ":" + strconv.Itoa(port)

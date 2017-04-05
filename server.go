@@ -20,7 +20,6 @@ import (
 	nurl "net/url"
 	"github.com/inconshreveable/go-update"
 	"path/filepath"
-	"github.com/jpillora/overseer"
 )
 
 type checkRet struct {
@@ -384,14 +383,16 @@ func doUpdate() bool {
 }
 
 func restartSelf() {
-	if runtime.GOOS == "windows" {
+	args := os.Args
+	n := args[0]
+	startProc(n, args)
+	if runtime.GOOS == "windows" || *nt {
 		args := os.Args
 		n := args[0]
 		startProc(n, args)
 		os.Exit(0)
-	} else {
-		overseer.Restart()
 	}
+	os.Exit(0)
 }
 
 func startProc(name string, args []string) error {
