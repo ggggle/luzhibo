@@ -398,9 +398,8 @@ func restartSelf() {
 	}
 	args = append(args, "-pid", strconv.Itoa(os.Getpid()))
 	startProc(n, args)
-
+	os.Exit(0)
 }
-
 
 func startProc(name string, args []string) error {
 	procAttr := new(os.ProcAttr)

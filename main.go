@@ -9,8 +9,8 @@ import (
 	"fmt"
 	"time"
 	"os"
-	"os/exec"
 	"path/filepath"
+	"os/exec"
 )
 
 const ver = 2017040300
@@ -26,40 +26,38 @@ func main() {
 	p := flag.Int("port", port, "WebUI监听端口")
 	nopen := flag.Bool("nopenui", false, "不自动打开WebUI")
 	nhta = flag.Bool("nhta", false, "禁用hta(仅Windows有效)")
-	pid := flag.Int("pid", 0, "上一个进程PID")
 	d := flag.Bool("d", false, "后台运行")
-	nt := flag.Bool("d", false, "无终端模式")
+	nt := flag.Bool("nt", false, "无终端模式")
 	flag.Parse()
+	port = *p
+	s := ":" + strconv.Itoa(port)
 	if *d {
-		args := os.Args
-		fmt.Println(args)
+		args := os.Args[1:]
 		for i, v := range args {
 			if v == "-d" || v == "-d=true" {
-				args[i] = ""
+				args[i] = "-d=false"
 			}
 		}
-		fmt.Println(args)
-		exec.Command(args[0], args...).Start()
+		args = append(args, "-nt")
+		cmd := exec.Command(os.Args[0], args...)
+		cmd.Start()
+		if cmd.Process != nil {
+			fmt.Printf("[PID]%d\n", cmd.Process.Pid)
+			fmt.Printf("[WebUI]\"%s\"\n", s)
+		} else {
+			fmt.Println("后台启动失败.")
+		}
 		os.Exit(0)
 	}
 	runtime.GOMAXPROCS(runtime.NumCPU())
-	if *pid != 0 {
-		proc, err := os.FindProcess(*pid)
-		if err == nil {
-			proc.Kill()
-			time.Sleep(time.Second * 2)
-		}
-	}
 	go func() {
 		time.Sleep(time.Second * 5)
 		d, f := filepath.Split(os.Args[0])
 		tp := filepath.Join(d, "."+f+".old")
 		os.Remove(tp)
 	}()
-	port = *p
-	s := ":" + strconv.Itoa(port)
+	fmt.Printf("正在\"%s\"处监听WebUI...\n", s)
 	if !*nt {
-		fmt.Printf("正在\"%s\"处监听WebUI...\n", s)
 		go startServer(s)
 		if !*nopen {
 			openWebUI(!*nhta)
