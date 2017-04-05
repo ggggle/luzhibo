@@ -443,7 +443,7 @@ const ui_main = `<!DOCTYPE html>
                     e();
                 },
                 complete: function () {
-                    if (s != undefined)
+                    if (c != undefined)
                         c();
                 },
                 timeout: t
