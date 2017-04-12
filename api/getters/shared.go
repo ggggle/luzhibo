@@ -9,17 +9,18 @@ import (
 	"math/rand"
 	"net/http"
 	"reflect"
-	"time"
-	"crypto/tls"
 	"strings"
+	"time"
+
+	nhttp "github.com/Baozisoftware/golibraries/http"
 )
 
 //实现一些通用函数/结构
 
 func httpGetWithUA(url, ua string) (data string, err error) {
 	resp, err := httpGetResp(url, ua)
-	var body []byte
 	if err == nil {
+		var body []byte
 		defer resp.Body.Close()
 		body, err = ioutil.ReadAll(resp.Body)
 		if err == nil {
@@ -34,17 +35,9 @@ func httpGet(url string) (data string, err error) {
 }
 
 func httpGetResp(url, ua string) (resp *http.Response, err error) {
-	if ua == "" {
-		ua = "User-Agent:Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.87 Safari/537.36"
-	}
-	tr := &http.Transport{
-		TLSClientConfig:    &tls.Config{InsecureSkipVerify: true},
-		DisableCompression: true,
-	}
-	var req *http.Request
-	client := http.Client{Transport: tr}
-	req, err = http.NewRequest("GET", url, nil)
+	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err == nil {
+		client := nhttp.NewHttpClient()
 		req.Header.Set("User-Agent", ua)
 		resp, err = client.Do(req)
 	}
@@ -52,17 +45,9 @@ func httpGetResp(url, ua string) (resp *http.Response, err error) {
 }
 
 func httpPostResp(url, ua, data string) (resp *http.Response, err error) {
-	if ua == "" {
-		ua = "User-Agent:Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.87 Safari/537.36"
-	}
-	tr := &http.Transport{
-		TLSClientConfig:    &tls.Config{InsecureSkipVerify: true},
-		DisableCompression: true,
-	}
-	var req *http.Request
-	client := http.Client{Transport: tr}
-	req, err = http.NewRequest("POST", url, strings.NewReader(data))
+	req, err := http.NewRequest(http.MethodPost, url, strings.NewReader(data))
 	if err == nil {
+		client := nhttp.NewHttpClient()
 		req.Header.Set("User-Agent", ua)
 		req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 		resp, err = client.Do(req)
@@ -72,8 +57,8 @@ func httpPostResp(url, ua, data string) (resp *http.Response, err error) {
 
 func httpPostWithUA(url, ua, data string) (result string, err error) {
 	resp, err := httpPostResp(url, ua, data)
-	var body []byte
 	if err == nil {
+		var body []byte
 		defer resp.Body.Close()
 		body, err = ioutil.ReadAll(resp.Body)
 		if err == nil {

@@ -3,10 +3,11 @@ package workers
 import (
 	"errors"
 	"fmt"
+	"os"
+	"time"
+
 	"github.com/Baozisoftware/luzhibo/api"
 	"github.com/Baozisoftware/luzhibo/api/getters"
-	"time"
-	"os"
 )
 
 //循环模式
@@ -110,14 +111,14 @@ func (i *multipleworker) do() {
 		if b {
 			i.sw.Start()
 			<-i.ch2
-		}
-		p, err := os.Stat(fn)
-		if err == nil {
-			if !p.IsDir() && p.Size() == 0 {
+			p, err := os.Stat(fn)
+			if err == nil {
+				if !p.IsDir() && p.Size() == 0 {
+					i.index--
+				}
+			} else {
 				i.index--
 			}
-		} else {
-			i.index--
 		}
 		if ec == 5 {
 			break

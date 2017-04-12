@@ -3,12 +3,12 @@ package workers
 import (
 	"bytes"
 	"io"
-	"net/http"
-	"crypto/tls"
-	"github.com/Baozisoftware/luzhibo/api/getters"
+	"os"
 	"os/exec"
 	"path"
-	"os"
+
+	"github.com/Baozisoftware/golibraries/http"
+	"github.com/Baozisoftware/luzhibo/api/getters"
 )
 
 //下载器
@@ -21,6 +21,7 @@ type downloader struct {
 	ch       chan bool
 	ch2      chan bool
 	fm       bool
+	client   *http.HttpClient
 }
 
 func newDownloader(url, filepath string, callbcak WorkCompletedCallBack) *downloader {
@@ -29,6 +30,7 @@ func newDownloader(url, filepath string, callbcak WorkCompletedCallBack) *downlo
 		r.url = url
 		r.filePath = filepath
 		r.cb = callbcak
+		r.client = http.NewHttpClient()
 		return r
 	}
 	return nil
@@ -88,7 +90,7 @@ func (i *downloader) http(url, filepath string) {
 			i.cb(ec)
 		}
 	}()
-	resp, err := httpGetResp(url)
+	resp, err := i.client.GetResp(url)
 	if err != nil || resp.StatusCode != 200 {
 		ec = 2 //请求时错误
 		return
@@ -117,20 +119,6 @@ func (i *downloader) http(url, filepath string) {
 			return
 		}
 	}
-}
-
-func httpGetResp(url string) (resp *http.Response, err error) {
-	tr := &http.Transport{
-		TLSClientConfig:    &tls.Config{InsecureSkipVerify: true},
-		DisableCompression: true,
-	}
-	var req *http.Request
-	client := http.Client{Transport: tr}
-	req, err = http.NewRequest("GET", url, nil)
-	if err == nil {
-		resp, err = client.Do(req)
-	}
-	return
 }
 
 func (i *downloader) ffmpeg(url, filepath string) {

@@ -2,24 +2,25 @@ package main
 
 import (
 	"bytes"
+	"encoding/base64"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"io/ioutil"
 	"net/http"
+	nurl "net/url"
 	"os"
-	"strconv"
-	"time"
-	"crypto/tls"
-	"errors"
-	"github.com/Baozisoftware/luzhibo/api"
 	"regexp"
 	"runtime"
-	"encoding/base64"
+	"strconv"
 	"strings"
-	nurl "net/url"
-	"github.com/inconshreveable/go-update"
+	"time"
+
 	"github.com/Baozisoftware/GoldenDaemon"
+	nhttp "github.com/Baozisoftware/golibraries/http"
+	"github.com/Baozisoftware/luzhibo/api"
+	"github.com/inconshreveable/go-update"
 )
 
 type checkRet struct {
@@ -58,7 +59,7 @@ func (_ ajaxHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 				tr.Has = true
 				tr.Path = fmt.Sprintf("[%s]%s_%s", oa.Site, i, time.Now().Format("20060102150405"))
 				tr.Live = l
-				tr.FileExt = oa.FileExt;
+				tr.FileExt = oa.FileExt
 				if oa.NeedFFmpeg {
 					tr.Support = hasFFmpeg()
 				} else {
@@ -299,15 +300,9 @@ func startServer(s string) {
 }
 
 func httpGet(url string) (data string, err error) {
-	tr := &http.Transport{
-		TLSClientConfig:    &tls.Config{InsecureSkipVerify: true},
-		DisableCompression: true,
-	}
-	var req *http.Request
-	client := http.Client{Transport: tr}
-	req, err = http.NewRequest("GET", url, nil)
+	client := nhttp.NewHttpClient()
+	resp, err := client.GetResp(url)
 	if err == nil {
-		resp, err := client.Do(req)
 		var body []byte
 		if err == nil && resp.StatusCode == 200 {
 			defer resp.Body.Close()

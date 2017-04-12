@@ -3,17 +3,18 @@
 package main
 
 import (
-	"runtime"
 	"flag"
-	"strconv"
 	"fmt"
-	"time"
 	"os"
 	"path/filepath"
+	"runtime"
+	"strconv"
+	"time"
+
 	"github.com/Baozisoftware/GoldenDaemon"
 )
 
-const ver = 2017040500
+const ver = 2017041200
 const p = "录直播"
 
 var port = 12216
