@@ -47,7 +47,7 @@ go get github.com/Knetic/govaluate
 go get github.com/lxn/win
 go get github.com/inconshreveable/go-update
 go get github.com/Baozisoftware/GoldenDaemon
-go get github.com/Baozisoftware/golibraries/http
+go get github.com/Baozisoftware/golibraries
 if [ "$1" = "init" ]; then
 	DONE
 fi
