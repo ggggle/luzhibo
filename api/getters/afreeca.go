@@ -68,7 +68,7 @@ func (i *afreeca) GetLiveInfo(id string) (live LiveInfo, err error) {
 	reg, _ := regexp.Compile("no : '(\\d+)'")
 	rid := reg.FindStringSubmatch(tmp)[1]
 	tmp, err = httpPost("http://live.afreecatv.com:8057/afreeca/player_live_api.php", "bno="+rid)
-	json := *(pruseJSON(tmp).jToken("CHANNEL"))
+	json := *(pruseJSON(tmp).JToken("CHANNEL"))
 	nick := fmt.Sprint(json["BJNICK"])
 	title := fmt.Sprint(json["TITLE"])
 	stpt := fmt.Sprint(json["STPT"])
@@ -83,7 +83,7 @@ func (i *afreeca) GetLiveInfo(id string) (live LiveInfo, err error) {
 	video := fmt.Sprint(json["view_url"])
 	if stpt == "HLS" {
 		tmp, err = httpPost("http://live.afreecatv.com:8057/afreeca/player_live_api.php", "type=pwd&bno="+rid)
-		json = *(pruseJSON(tmp).jToken("CHANNEL"))
+		json = *(pruseJSON(tmp).JToken("CHANNEL"))
 		aid := fmt.Sprint(json["AID"])
 		video += "?aid=" + aid
 	} else {

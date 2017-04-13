@@ -79,7 +79,7 @@ func (i *huajiao) GetLiveInfo(id string) (live LiveInfo, err error) {
 	x, y = strings.Index(tmp, "{"), len(tmp)-1
 	tmp = tmp[x:y]
 	json := pruseJSON(tmp)
-	author, feed := *(json.jToken("author")), *(json.jToken("feed"))
+	author, feed := *(json.JToken("author")), *(json.JToken("feed"))
 	sn := feed["sn"]
 	nick := author["nickname"].(string)
 	title := feed["title"].(string)

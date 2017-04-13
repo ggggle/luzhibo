@@ -47,9 +47,9 @@ func (i *longzhu) GetRoomInfo(url string) (id string, live bool, err error) {
 		url = "http://searchapi.plu.cn/api/search/room?title=" + id
 		var tmp string
 		tmp, err = httpGet(url)
-		json := pruseJSON(tmp).jTokens("items")
+		json := pruseJSON(tmp).JTokens("items")
 		if len(json) > 0 {
-			live = (*json[0].jToken("live"))["isLive"].(bool)
+			live = (*json[0].JToken("live"))["isLive"].(bool)
 		}
 	}
 	if id == "" {
@@ -68,7 +68,7 @@ func (i *longzhu) GetLiveInfo(id string) (live LiveInfo, err error) {
 	live = LiveInfo{}
 	url := "http://roomapicdn.plu.cn/room/RoomAppStatusV2?domain=" + id
 	tmp, err := httpGet(url)
-	json := *(pruseJSON(tmp).jToken("BaseRoomInfo"))
+	json := *(pruseJSON(tmp).JToken("BaseRoomInfo"))
 	nick := json["Name"].(string)
 	title := json["BoardCastTitle"].(string)
 	details := json["Desc"].(string)
@@ -76,7 +76,7 @@ func (i *longzhu) GetLiveInfo(id string) (live LiveInfo, err error) {
 	live.RoomID = fmt.Sprintf("%.f", _id)
 	url = "http://livestream.plu.cn/live/getlivePlayurl?roomId=" + live.RoomID
 	tmp, err = httpGet(url)
-	json = *(pruseJSON(tmp).jTokens("playLines")[0].jTokens("urls")[0])
+	json = *(pruseJSON(tmp).JTokens("playLines")[0].JTokens("urls")[0])
 	video := json["securityUrl"].(string)
 	live.LiveNick = nick
 	live.RoomTitle = title

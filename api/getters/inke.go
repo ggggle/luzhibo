@@ -66,8 +66,8 @@ func (i *inke) GetLiveInfo(id string) (live LiveInfo, err error) {
 	live = LiveInfo{RoomID: id}
 	url := "http://webapi.busi.inke.cn/web/live_share_pc?uid=0&id=" + id
 	tmp, err := httpGet(url)
-	json := pruseJSON(tmp).jToken("data")
-	info1, info2 := *(json.jToken("media_info")), *(json.jToken("file"))
+	json := pruseJSON(tmp).JToken("data")
+	info1, info2 := *(json.JToken("media_info")), *(json.JToken("file"))
 	nick := fmt.Sprint(info1["nick"])
 	title := fmt.Sprint(info2["title"])
 	details := fmt.Sprint(info1["description"])

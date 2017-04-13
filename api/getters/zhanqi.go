@@ -65,7 +65,7 @@ func (i *zhanqi) GetLiveInfo(id string) (live LiveInfo, err error) {
 	url := "http://apis.zhanqi.tv/static/v2.1/room/"
 	url = fmt.Sprintf("%s%s.json", url, id)
 	tmp, err := httpGet(url)
-	json := *(pruseJSON(tmp).jToken("data"))
+	json := *(pruseJSON(tmp).JToken("data"))
 	nick := json["nickname"].(string)
 	title := json["title"].(string)
 	img := json["bpic"].(string)

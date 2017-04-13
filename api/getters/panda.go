@@ -45,7 +45,7 @@ func (i *panda) GetRoomInfo(url string) (id string, live bool, err error) {
 	id = reg.FindStringSubmatch(url)[1]
 	url = "http://www.panda.tv/ajax_search?roomid=" + id
 	tmp, err := httpGet(url)
-	json := pruseJSON(tmp).jToken("data").jTokens("items")
+	json := pruseJSON(tmp).JToken("data").JTokens("items")
 	var r interface{}
 	r, err = forEachOne(json, func(v interface{}) bool { return (*v.(*jObject))["roomid"] == id })
 	live = (*r.(*jObject))["status"] == "2"
@@ -66,16 +66,16 @@ func (i *panda) GetLiveInfo(id string) (live LiveInfo, err error) {
 	url := "http://www.panda.tv/api_room_v2?__plat=pc_web&roomid="
 	url = fmt.Sprintf("%s%s&_=%d", url, id, getUnixTimesTamp())
 	tmp, err := httpGet(url)
-	json := pruseJSON(tmp).jToken("data")
-	roomInfo, videoInfo, hostInfo := *(json.jToken("roominfo")), *(json.jToken("videoinfo")), *(json.jToken("hostinfo"))
+	json := pruseJSON(tmp).JToken("data")
+	roomInfo, videoInfo, hostInfo := *(json.JToken("roominfo")), *(json.JToken("videoinfo")), *(json.JToken("hostinfo"))
 	nick := hostInfo["name"].(string)
 	title := roomInfo["name"].(string)
 	details := roomInfo["bulletin"].(string)
-	img := (*(roomInfo.jToken("pictures")))["img"].(string)
+	img := (*(roomInfo.JToken("pictures")))["img"].(string)
 	key := videoInfo["room_key"].(string)
 	flag := videoInfo["plflag"].(string)
 	plflag_list := videoInfo["plflag_list"].(string)
-	auth := *(pruseJSON(plflag_list).jToken("auth"))
+	auth := *(pruseJSON(plflag_list).JToken("auth"))
 	rid := auth["rid"]
 	t := auth["time"]
 	sign := auth["sign"]

@@ -3,7 +3,6 @@ package getters
 import (
 	"crypto/md5"
 	"encoding/hex"
-	"encoding/json"
 	"errors"
 	"io/ioutil"
 	"math/rand"
@@ -13,6 +12,7 @@ import (
 	"time"
 
 	nhttp "github.com/Baozisoftware/golibraries/http"
+	"github.com/Baozisoftware/golibraries/json"
 )
 
 //实现一些通用函数/结构
@@ -132,51 +132,8 @@ func forEachOne(list interface{}, f func(interface{}) bool) (result interface{},
 
 type jObject map[string]interface{}
 
-func pruseJSON(data string) *jObject {
-	var o interface{}
-	if json.Unmarshal([]byte(data), &o) == nil {
-		if m, ok := o.(map[string]interface{}); ok {
-			j := jObject(m)
-			return &j
-		}
-	}
-	return nil
-}
-
-func (v *jObject) jToken(key string) *jObject {
-	t, ok := (*v)[key]
-	if ok {
-		if m, ok := t.(map[string]interface{}); ok {
-			j := jObject(m)
-			return &j
-		}
-	}
-	return nil
-}
-
-func (v *jObject) jArray(key string) []interface{} {
-	t, ok := (*v)[key]
-	if ok {
-		if m, ok := t.([]interface{}); ok {
-			return m
-		}
-	}
-	return nil
-}
-
-func (v *jObject) jTokens(key string) []*jObject {
-	t := v.jArray(key)
-	if t != nil {
-		r := make([]*jObject, 0)
-		for _, v := range t {
-			if m, ok := v.(map[string]interface{}); ok {
-				j := jObject(m)
-				r = append(r, &j)
-			}
-		}
-		return r
-	}
-	return nil
+func pruseJSON(data string) *json.JObject {
+	return json.PruseJSON(data)
 }
 
 func randInt64(min, max int64) int64 {

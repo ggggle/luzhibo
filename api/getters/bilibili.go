@@ -68,11 +68,11 @@ func (i *bilibili) GetLiveInfo(id string) (live LiveInfo, err error) {
 	args := "room_id=" + id
 	url := getAPIURL(api, args)
 	tmp, err := httpGet(url)
-	json := *(pruseJSON(tmp).jToken("data"))
+	json := *(pruseJSON(tmp).JToken("data"))
 	title := json["title"].(string)
 	nick := json["uname"].(string)
 	img := json["cover"].(string)
-	cid := (*json.jToken("schedule"))["cid"].(float64)
+	cid := (*json.JToken("schedule"))["cid"].(float64)
 	if cid > 10000000 {
 		cid -= 10000000
 	}

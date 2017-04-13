@@ -46,7 +46,7 @@ func (i *yi) GetRoomInfo(url string) (id string, live bool, err error) {
 		tmp, err = httpGet(url)
 		json := pruseJSON(tmp)
 		if (*json)["result"].(float64) == 1 {
-			live = (*json.jToken("data"))["status"].(float64) == 10
+			live = (*json.JToken("data"))["status"].(float64) == 10
 		} else {
 			id = ""
 		}
@@ -67,7 +67,7 @@ func (i *yi) GetLiveInfo(id string) (live LiveInfo, err error) {
 	live = LiveInfo{RoomID: id}
 	url := "http://api.xiaoka.tv/live/web/get_play_live?scid=" + id
 	tmp, err := httpGet(url)
-	json := *(pruseJSON(tmp).jToken("data"))
+	json := *(pruseJSON(tmp).JToken("data"))
 	nick := json["nickname"].(string)
 	title := json["title"].(string)
 	video := json["linkurl"].(string)

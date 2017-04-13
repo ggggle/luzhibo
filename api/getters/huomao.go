@@ -66,11 +66,11 @@ func (i *huomao) GetLiveInfo(id string) (live LiveInfo, err error) {
 	live = LiveInfo{RoomID: id}
 	url := getURL(id)
 	tmp, err := httpGet(url)
-	json := *(pruseJSON(tmp).jToken("data"))
+	json := *(pruseJSON(tmp).JToken("data"))
 	nick := json["username"].(string)
 	title := json["channel"].(string)
 	details := json["content"].(string)
-	video := (*(json.jTokens("streamList"))[2])["HD"].(string)
+	video := (*(json.JTokens("streamList"))[2])["HD"].(string)
 	live.LiveNick = nick
 	live.LivingIMG = ""
 	live.RoomDetails = details

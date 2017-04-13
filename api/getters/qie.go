@@ -64,7 +64,7 @@ func (i *qie) GetLiveInfo(id string) (live LiveInfo, err error) {
 	args := fmt.Sprintf("room/%s?aid=wp&client_sys=wp&time=%d", id, getUnixTimesTamp())
 	url = fmt.Sprintf("%s%s&auth=%s", url, args, getMD5String(args+"zNzMV1y4EMxOHS6I5WKm"))
 	tmp, err := httpGet(url)
-	json := *(pruseJSON(tmp).jToken("data"))
+	json := *(pruseJSON(tmp).JToken("data"))
 	video := fmt.Sprintf("%s/%s", json["rtmp_url"], json["rtmp_live"])
 	img := json["room_src"].(string)
 	title := json["room_name"].(string)
