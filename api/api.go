@@ -74,21 +74,22 @@ func getGetter(url string) getters.Getter {
 					 "chushou\\.tv",
 					 "inke\\.cn",
 					 "play\\.afreecatv\\.com"}
-	for i := 0; i < len(getters.Getters); i++ {
+	gs := getters.Getters()
+	for i := 0; i < len(gs); i++ {
 		if ok, _ := regexp.MatchString(regs[i], url); ok {
-			return getters.Getters[i]
+			return gs[i]
 		}
 	}
 	return nil
 }
 
 func GetSupports() []string {
-	gs := getters.Getters
+	gs := getters.Getters()
 	ret := make([]string, len(gs))
 	for i, oa := range gs {
 		ret[i] = oa.Site()
 		if oa.NeedFFMpeg() {
-			ret[i]=ret[i]+"*"
+			ret[i] = ret[i] + "*"
 		}
 	}
 	return ret
