@@ -4,10 +4,12 @@ package main
 
 import (
 	"fmt"
+	"os"
 	"strings"
 	"time"
-	"github.com/Baozisoftware/qrcode-terminal-go"
+
 	"github.com/Baozisoftware/luzhibo/api"
+	"github.com/Baozisoftware/qrcode-terminal-go"
 	"github.com/pkg/browser"
 )
 
@@ -161,4 +163,8 @@ func openWebUI(hta bool) {
 		u = fmt.Sprintf("%s:%d", u, port)
 	}
 	browser.OpenURL(u)
+}
+
+func quit() {
+	os.Exit(0)
 }

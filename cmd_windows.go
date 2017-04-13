@@ -4,26 +4,28 @@ package main
 
 import (
 	"fmt"
-	"github.com/pkg/browser"
-	"runtime"
+	"net/http"
+	"os"
 	"os/exec"
+	"runtime"
 	"syscall"
 	"unsafe"
-	"github.com/lxn/walk"
-	"net/http"
+
 	"github.com/dkua/go-ico"
+	"github.com/lxn/walk"
 	"github.com/lxn/win"
+	"github.com/pkg/browser"
 )
 
 func cmd() {
 	p := true
-	mw, _ := walk.NewMainWindow()
 	resp, _ := http.Get(webuiHost() + "/favicon.ico")
 	defer resp.Body.Close()
 	imgs, _ := ico.DecodeAll(resp.Body)
 	icon, _ := walk.NewIconFromImage(imgs.Image[6])
 	ni, _ := walk.NewNotifyIcon()
 	defer ni.Dispose()
+	mw, _ := walk.NewMainWindow()
 	ni.SetIcon(icon)
 	ni.SetToolTip(fmt.Sprintf("正在\"%d\"处监听WebUI...", port))
 	ni.MouseDown().Attach(func(x, y int, button walk.MouseButton) {
@@ -43,6 +45,13 @@ func cmd() {
 	ni.SetVisible(true)
 	ni.ShowCustom("录直播 - 软件已启动...", "左键点击重新打开WebUI,右键点击退出本软件.")
 	mw.Run()
+}
+
+func quit() {
+	if htaproc != nil {
+		htaproc.Kill()
+	}
+	os.Exit(0)
 }
 
 func openWebUI(hta bool) {

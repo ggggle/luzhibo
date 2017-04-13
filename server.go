@@ -164,6 +164,13 @@ func (_ ajaxHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		}
 		w.Write([]byte(r))
 		return
+	case "quit":
+		w.Write([]byte("ok"))
+		go func() {
+			time.Sleep(time.Second * 1)
+			quit()
+		}()
+		return
 	}
 	w.Write([]byte(""))
 }

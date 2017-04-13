@@ -452,23 +452,19 @@
 
         function quit() {
             if (confirm("退出后将停止所有正在运行的任务,确定退出?")) {
+                $("button").attr("disabled", "disabled");
                 showTip("正在退出...", 0);
-                doAjax("quit", function () {
-                    showTip("请求已送达,3秒后关闭本窗口...",2);
-                    setTimeout(function () {
-                        window.close();
-                    }, 3000)
+                doAjax("quit", "", function (ret) {
+                    if (ret == "ok") {
+                        showTip("请求已送达,3秒后关闭本窗口...", 2);
+                        setTimeout(function () {
+                            window.close();
+                        }, 3000)
+                    }
                 }, function () {
-                    showTip("请求已送达,3秒后关闭本窗口...",2);
-                    setTimeout(function () {
-                        window.close();
-                    }, 3000)
-                }, function () {
-                    showTip("请求已送达,3秒后关闭本窗口...",2);
-                    setTimeout(function () {
-                        window.close();
-                    }, 3000)
-        })
+                    showTip("请求后端失败.", 3);
+                    $("button").removeAttr("disabled");
+                });
             }
         }
     </script>

@@ -432,15 +432,17 @@ const ui_main = `<!DOCTYPE html>
         function doAjax(act, args, s, e, c, t) {
             if (t == undefined)
                 t = -1;
-            if (args != "")
+            if (t != undefined && args != "")
                 args = "&" + args;
             $.ajax({
                 url: "/ajax?act=" + act + args + "&_=" + Math.random(),
                 success: function (ret) {
-                    s(ret);
+                    if (s != undefined)
+                        s(ret);
                 },
                 error: function () {
-                    e();
+                    if (e != undefined)
+                        e();
                 },
                 complete: function () {
                     if (c != undefined)
@@ -448,6 +450,24 @@ const ui_main = `<!DOCTYPE html>
                 },
                 timeout: t
             });
+        }
+
+        function quit() {
+            if (confirm("退出后将停止所有正在运行的任务,确定退出?")) {
+                $("button").attr("disabled", "disabled");
+                showTip("正在退出...", 0);
+                doAjax("quit", "", function (ret) {
+                    if (ret == "ok") {
+                        showTip("请求已送达,3秒后关闭本窗口...", 2);
+                        setTimeout(function () {
+                            window.close();
+                        }, 3000)
+                    }
+                }, function () {
+                    showTip("请求后端失败.", 3);
+                    $("button").removeAttr("disabled");
+                });
+            }
         }
     </script>
 </head>
@@ -468,6 +488,9 @@ const ui_main = `<!DOCTYPE html>
             <div class="page-header ">
                 <h1><span class="glyphicon glyphicon-facetime-video"></span> 录直播
                     <small id="tver"></small>
+                    <button class="btn btn-mini btn-danger" style="float:right" type="button" onclick="quit()"><span
+                            class="glyphicon glyphicon-log-out"></span> 退出程序
+                    </button>
                 </h1>
             </div>
             <div style="text-align:center">
