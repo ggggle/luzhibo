@@ -14,7 +14,7 @@ import (
 	"github.com/Baozisoftware/GoldenDaemon"
 )
 
-const ver = 2017041200
+const ver = 2017041300
 const p = "录直播"
 
 var port = 12216
