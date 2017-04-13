@@ -166,16 +166,16 @@ const ui_main = `<!DOCTYPE html>
                             $("#uver_tip").attr("hidden", "hidden");
                             $("button").attr("disabled", "disabled");
                             showTip("自动更新中...", 1);
-                            doAjax("update", function () {
-                                showTip("自动更新失败.", 2);
+                            doAjax("update", "", function (ret) {
+                                if (ret == "true")
+                                    showTip("自动更新成功,下次启动将使用新版.", 1);
+                                else
+                                    showTip("自动更新失败.", 2);
                                 $("button").removeAttr("disabled");
                             }, function () {
-                                showTip("自动更新成功,下次启动将使用新版.", 1);
+                                showTip("请求后端失败.", 3);
                                 $("button").removeAttr("disabled");
-                            }, function () {
-                                showTip("自动更新成功,下次启动将使用新版.", 1);
-                                $("button").removeAttr("disabled");
-                            }, 20000);
+                            });
                         });
                     }
                     showTip("获取版本信息成功.", 1);

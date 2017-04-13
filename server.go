@@ -167,7 +167,7 @@ func (_ ajaxHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	case "quit":
 		w.Write([]byte("ok"))
 		go func() {
-			time.Sleep(time.Second * 1)
+			time.Sleep(time.Second)
 			quit()
 		}()
 		return
@@ -376,7 +376,10 @@ func doUpdate() bool {
 	updated = true
 	updatting = false
 	if len(tasks) == 0 {
-		restartSelf()
+		go func() {
+			time.Sleep(time.Second)
+			restartSelf()
+		}()
 	}
 	return true
 }
