@@ -130,8 +130,6 @@ func forEachOne(list interface{}, f func(interface{}) bool) (result interface{},
 	return
 }
 
-type jObject map[string]interface{}
-
 func pruseJSON(data string) *json.JObject {
 	return json.PruseJSON(data)
 }

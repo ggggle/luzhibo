@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"regexp"
 	"strings"
+	njson"github.com/Baozisoftware/golibraries/json"
 )
 
 //panda 熊猫直播
@@ -47,8 +48,8 @@ func (i *panda) GetRoomInfo(url string) (id string, live bool, err error) {
 	tmp, err := httpGet(url)
 	json := pruseJSON(tmp).JToken("data").JTokens("items")
 	var r interface{}
-	r, err = forEachOne(json, func(v interface{}) bool { return (*v.(*jObject))["roomid"] == id })
-	live = (*r.(*jObject))["status"] == "2"
+	r, err = forEachOne(json, func(v interface{}) bool { return (*v.(*njson.JObject))["roomid"] == id })
+	live = (*r.(*njson.JObject))["status"] == "2"
 	if id == "" {
 		err = errors.New("fail get data")
 	}
