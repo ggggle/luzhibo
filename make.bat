@@ -32,8 +32,6 @@ cd %CPATH%
 if exist releases rd /s /q releases
 md releases
 
-set CGO_ENABLED=1
-
 ::386:7
 set GOARCH=386
 
