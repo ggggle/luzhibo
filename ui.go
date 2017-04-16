@@ -502,7 +502,7 @@ const ui_main = `<!DOCTYPE html>
                 <h1><span class="glyphicon glyphicon-facetime-video"></span> 录直播
                     <small id="tver"></small>
                     <div style="float:right">
-                        <button class="btn btn-mini btn-info" onclick="showLogs()"><span
+                        <button class="btn btn-mini btn-info" onclick="showLogs()" disabled="disabled"><span
                                 class="glyphicon glyphicon-tag"></span> 查看日志
                         </button>
                         <button class="btn btn-mini btn-danger" type="button" onclick="quit()"><span
