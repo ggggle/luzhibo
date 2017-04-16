@@ -471,15 +471,12 @@ const ui_main = `<!DOCTYPE html>
         }
 
         function showLogs() {
-            $("button").attr("disabled", "disabled");
             showTip("正在获取运行日志...", 0);
             doAjax("log", "", function (ret) {
                 $("#logs").val(ret);
                 $("#logDialog").modal('show');
-                $("button").removeAttr("disabled");
             }, function () {
                 showTip("请求后端失败.", 3);
-                $("button").removeAttr("disabled");
             });
         }
     </script>
@@ -711,13 +708,8 @@ const ui_main = `<!DOCTYPE html>
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
-                        <label for="addTask_url"></label><textarea class="form-control" id="logs"
-                                                                   rows="15" title="" readonly="readonly"></textarea>
+                        <textarea class="form-control" id="logs" rows="25" title="" readonly="readonly"></textarea>
                     </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-ok"></span> 添加
-                    </button>
                 </div>
             </form>
         </div>
