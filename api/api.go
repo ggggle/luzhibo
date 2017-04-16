@@ -62,13 +62,11 @@ func (i *LuzhiboAPI) GetRoomInfo() (id string, live bool, err error) {
 	if Logger != nil {
 		s := fmt.Sprintf("获取房间信息\"%s\",结果:", i.URL)
 		if err == nil {
+			s += fmt.Sprintf("成功(直播平台:\"%s\",房间ID:\"%s\",已开播:", i.Site, id)
 			if live {
-				s += fmt.Sprintf("成功(直播平台:\"%s\",房间ID:\"%s\",已开播:", i.Site, id)
-				if live {
-					s += fmt.Sprint("\"是\".).")
-				} else {
-					s += fmt.Sprint("\"否\".).")
-				}
+				s += fmt.Sprint("\"是\".).")
+			} else {
+				s += fmt.Sprint("\"否\".).")
 			}
 		} else {
 			s += fmt.Sprint("失败(获取时出错).")
