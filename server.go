@@ -308,6 +308,7 @@ func startServer(s string) {
 
 func httpGet(url string) (data string, err error) {
 	client := nhttp.NewHttpClient()
+	client.SetProxy(*proxy)
 	resp, err := client.GetResp(url)
 	if err == nil {
 		var body []byte
@@ -342,6 +343,8 @@ func checkUpdate() string {
 			} else {
 				r += "null"
 			}
+		} else {
+			r += "null"
 		}
 	}
 	return r

@@ -38,6 +38,7 @@ func httpGetResp(url, ua string) (resp *http.Response, err error) {
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err == nil {
 		client := nhttp.NewHttpClient()
+		client.SetProxy(Proxy)
 		req.Header.Set("User-Agent", ua)
 		resp, err = client.Do(req)
 	}
@@ -48,6 +49,7 @@ func httpPostResp(url, ua, data string) (resp *http.Response, err error) {
 	req, err := http.NewRequest(http.MethodPost, url, strings.NewReader(data))
 	if err == nil {
 		client := nhttp.NewHttpClient()
+		client.SetProxy(Proxy)
 		req.Header.Set("User-Agent", ua)
 		req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 		resp, err = client.Do(req)
@@ -164,5 +166,7 @@ type Getter interface {
 func Getters() []Getter {
 	return []Getter{&douyu{}, &panda{}, &zhanqi{}, &longzhu{}, &huya{}, &qie{}, &bilibili{}, &quanmin{}, &huajiao{}, &huomao{}, &yi{}, &qiedianjing{}, &chushou{}, &inke{}, &afreeca{}}
 }
+
+var Proxy = ""
 
 const ipadUA = "Mozilla/5.0 (iPad; CPU OS 8_1_3 like Mac OS X) AppleWebKit/600.1.4 (KHTML, like Gecko) Version/8.0 Mobile/12B466 Safari/600.1.4"

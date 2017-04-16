@@ -24,3 +24,5 @@ func createFile(filepath string) (file *os.File, err error) {
 	}
 	return
 }
+
+var Proxy=""

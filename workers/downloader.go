@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"io"
 	"net/http"
+	nurl "net/url"
 	"os"
 	"os/exec"
 	"path"
@@ -126,6 +127,7 @@ func httpGetResp(url string) (resp *http.Response, err error) {
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err == nil {
 		client := nhttp.NewHttpClient()
+		client.SetProxy(Proxy)
 		resp, err = client.Do(req)
 	}
 	return
@@ -152,6 +154,12 @@ func (i *downloader) ffmpeg(url, filepath string) {
 		return
 	}
 	cmd := exec.Command("ffmpeg", "-y", "-i", i.url, "-vcodec", "copy", "-acodec", "copy", i.filePath)
+	if Proxy != "" {
+		_, err := nurl.Parse(url)
+		if err == nil {
+			cmd = exec.Command("ffmpeg", "-y", "-i", i.url, "-vcodec", "copy", "-acodec", "copy", "http_proxy", Proxy, i.filePath)
+		}
+	}
 	go func() {
 		if err := cmd.Start(); err != nil {
 			ec = 6 //ffmpeg启动失败
