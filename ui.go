@@ -471,12 +471,15 @@ const ui_main = `<!DOCTYPE html>
         }
 
         function showLogs() {
+            $("button").attr("disabled", "disabled");
             showTip("正在获取运行日志...", 0);
             doAjax("log", "", function (ret) {
                 $("#logs").val(ret);
                 $("#logDialog").modal('show');
+                $("button").removeAttr("disabled");
             }, function () {
                 showTip("请求后端失败.", 3);
+                $("button").removeAttr("disabled");
             });
         }
     </script>
