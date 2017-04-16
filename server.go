@@ -342,7 +342,7 @@ func checkUpdate() string {
 					s += fmt.Sprintf("有新版本(%d->%d).", ver, v)
 					r += data
 				} else {
-					s += fmt.Sprintf("无新版本(当前版本%d).", ver)
+					s += fmt.Sprintf("无新版本(当前版本:%d).", ver)
 					r += "null"
 				}
 			} else {
