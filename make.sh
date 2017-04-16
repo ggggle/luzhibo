@@ -66,6 +66,9 @@ if [ -d releases ]; then
 	rm -rf releases
 fi
 mkdir releases
+
+CGO_ENABLED=1
+
 #386:7
 GOARCH=386
 
