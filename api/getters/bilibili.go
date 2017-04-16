@@ -64,21 +64,14 @@ func (i *bilibili) GetLiveInfo(id string) (live LiveInfo, err error) {
 		}
 	}()
 	live = LiveInfo{RoomID: id}
-	api := "room_info"
-	args := "room_id=" + id
-	url := getAPIURL(api, args)
+	url := "http://api.live.bilibili.com/live/getInfo?roomid=" + id
 	tmp, err := httpGet(url)
 	json := *(pruseJSON(tmp).JToken("data"))
-	title := json["title"].(string)
-	nick := json["uname"].(string)
-	img := json["cover"].(string)
-	cid := (*json.JToken("schedule"))["cid"].(float64)
-	if cid > 10000000 {
-		cid -= 10000000
-	}
-	api = "playurl"
-	args = fmt.Sprintf("cid=%.f&rnd=%d", cid, randInt64(100, 9999))
-	url = getAPIURL(api, args)
+	title := json["ROOMTITLE"].(string)
+	nick := json["ANCHOR_NICK_NAME"].(string)
+	img := json["COVER"].(string)
+	cid := json["ROOMID"].(float64)
+	url = fmt.Sprintf( "http://live.bilibili.com/api/playurl?player=1&cid=%.0f",cid)
 	tmp, err = httpGet(url)
 	x, y := strings.Index(tmp, "<url><![CDATA[")+14, strings.LastIndex(tmp, "]]></url>")
 	video := tmp[x:y]
@@ -91,13 +84,4 @@ func (i *bilibili) GetLiveInfo(id string) (live LiveInfo, err error) {
 		err = errors.New("fail get data")
 	}
 	return
-}
-
-func getAPIURL(api, args string) string {
-	t1 := fmt.Sprintf("http://live.bilibili.com/api/%s?", api)
-	t2 := "appkey=422fd9d7289a1dd9&" + args
-	t3 := t2 + "ba3a4e554e9a6e15dc4d1d70c2b154e3"
-	t4 := "&sign=" + getMD5String(t3)
-	r := t1 + t2 + t4
-	return r
 }
