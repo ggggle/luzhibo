@@ -44,7 +44,7 @@ func (i *afreeca) GetRoomInfo(url string) (id string, live bool, err error) {
 	reg, _ := regexp.Compile("play\\.afreecatv\\.com/(\\w+)(/\\d+)*")
 	id = reg.FindStringSubmatch(url)[1]
 	tmp, err := httpGet(url)
-	if !strings.Contains(tmp, fmt.Sprintf("id : '%s'", id)) {
+	if !strings.Contains(tmp, fmt.Sprintf("szBjId   = '%s'", id)) {
 		id = ""
 	} else {
 		live = strings.Contains(tmp, "\"og:title\" content=\"[생]")
@@ -65,7 +65,7 @@ func (i *afreeca) GetLiveInfo(id string) (live LiveInfo, err error) {
 	live = LiveInfo{RoomID: id}
 	url := "http://play.afreecatv.com/" + id
 	tmp, err := httpGet(url)
-	reg, _ := regexp.Compile("no : '(\\d+)'")
+	reg, _ := regexp.Compile("nBroadNo = (\\d+)")
 	rid := reg.FindStringSubmatch(tmp)[1]
 	tmp, err = httpPost("http://live.afreecatv.com:8057/afreeca/player_live_api.php", "bno="+rid)
 	json := *(pruseJSON(tmp).JToken("CHANNEL"))
