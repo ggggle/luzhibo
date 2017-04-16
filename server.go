@@ -334,7 +334,7 @@ func checkUpdate() string {
 		r += "null"
 	} else {
 		data, err := httpGet("https://api.github.com/repos/Baozisoftware/luzhibo/releases/latest")
-		if err == il {
+		if err == nil {
 			if data != "" {
 				reg, _ := regexp.Compile("Ver (\\d{10})")
 				data = reg.FindStringSubmatch(data)[1]
