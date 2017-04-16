@@ -3,8 +3,10 @@
 package main
 
 import (
+	"bytes"
 	"flag"
 	"fmt"
+	"log"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -12,6 +14,7 @@ import (
 	"time"
 
 	"github.com/Baozisoftware/GoldenDaemon"
+	"github.com/Baozisoftware/luzhibo/api"
 	"github.com/Baozisoftware/luzhibo/api/getters"
 	"github.com/Baozisoftware/luzhibo/workers"
 )
@@ -29,13 +32,15 @@ var nt *bool
 
 var proxy *string
 
+var logBuf = bytes.NewBufferString("")
+
 func main() {
 	p := flag.Int("port", port, "WebUI监听端口")
 	nopen := flag.Bool("nopenui", false, "不自动打开WebUI")
 	nhta = flag.Bool("nhta", false, "禁用hta(仅Windows有效)")
 	flag.Bool("d", false, "启用后台运行(仅非Windows有效)")
 	nt = flag.Bool("nt", false, "启用无终端交互模式(仅非Windows有效)")
-	proxy = flag.String("proxy", "http://127.0.0.1:8880", "代理服务器(如:\"http://127.0.0.1:8888\".)")
+	proxy = flag.String("proxy", "", "代理服务器(如:\"http://127.0.0.1:8888\".)")
 	flag.Parse()
 	port = *p
 	s := ":" + strconv.Itoa(port)
@@ -51,6 +56,8 @@ func main() {
 	}()
 	getters.Proxy = *proxy
 	workers.Proxy = *proxy
+	l := log.New(logBuf, "", log.LstdFlags)
+	api.Logger = l
 	fmt.Printf("正在\"%s\"处监听WebUI...\n", s)
 	if !*nt || runtime.GOOS == "windows" {
 		time.Sleep(time.Second * 2)

@@ -2,8 +2,11 @@ package api
 
 import (
 	"errors"
+	"fmt"
+	"log"
 	"regexp"
 	"strings"
+
 	"github.com/Baozisoftware/luzhibo/api/getters"
 )
 
@@ -21,6 +24,7 @@ type LuzhiboAPI struct {
 
 //New 使用网址创建一个实例
 func New(url string) *LuzhiboAPI {
+	var r *LuzhiboAPI
 	g := getGetter(url)
 	if g != nil {
 		i := &LuzhiboAPI{}
@@ -31,9 +35,20 @@ func New(url string) *LuzhiboAPI {
 		i.Icon = g.SiteIcon()
 		i.FileExt = g.FileExt()
 		i.NeedFFmpeg = g.NeedFFMpeg()
-		return i
+		r = i
+	} else {
+		r = nil
 	}
-	return nil
+	if Logger != nil {
+		s := fmt.Sprintf("获取地址信息\"%s\",结果:", url)
+		if r != nil {
+			s += fmt.Sprintf("成功(%s).", r.Site)
+		} else {
+			s += fmt.Sprint("失败(不支持的平台).")
+		}
+		Logger.Print(s)
+	}
+	return r
 }
 
 //GetRoomInfo 取直播间信息
@@ -44,6 +59,22 @@ func (i *LuzhiboAPI) GetRoomInfo() (id string, live bool, err error) {
 	}
 	id, live, err = i.g.GetRoomInfo(i.URL)
 	i.id = id
+	if Logger != nil {
+		s := fmt.Sprintf("获取房间信息\"%s\",结果:", i.URL)
+		if err == nil {
+			if live {
+				s += fmt.Sprintf("成功(直播平台:\"%s\",房间ID:\"%s\",已开播:", i.Site, id)
+				if live {
+					s += fmt.Sprint("\"是\".).")
+				} else {
+					s += fmt.Sprint("\"否\".).")
+				}
+			}
+		} else {
+			s += fmt.Sprint("失败(获取时出错).")
+		}
+		Logger.Print(s)
+	}
 	return
 }
 
@@ -54,6 +85,15 @@ func (i *LuzhiboAPI) GetLiveInfo() (live getters.LiveInfo, err error) {
 		return
 	}
 	live, err = i.g.GetLiveInfo(i.id)
+	if Logger != nil {
+		s := fmt.Sprintf("获取直播信息\"%s\",结果:", i.URL)
+		if err == nil {
+			s += fmt.Sprintf("成功(直播平台:\"%s\",房间ID:\"%s\",房间标题:\"%s\",主播昵称:\"%s\",直播流地址:\"%s\".).", i.Site, i.id, live.RoomTitle, live.LiveNick, live.VideoURL)
+		} else {
+			s += fmt.Sprint("失败(获取时出错).")
+		}
+		Logger.Print(s)
+	}
 	return
 }
 
@@ -94,3 +134,5 @@ func GetSupports() []string {
 	}
 	return ret
 }
+
+var Logger *log.Logger

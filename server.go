@@ -170,6 +170,8 @@ func (_ ajaxHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			time.Sleep(time.Second)
 			quit()
 		}()
+	case "log":
+		w.Write(logBuf.Bytes())
 		return
 	}
 	w.Write([]byte(""))
