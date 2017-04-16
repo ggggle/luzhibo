@@ -33,6 +33,7 @@ var nt *bool
 var proxy *string
 
 var logBuf = bytes.NewBufferString("")
+var logger = log.New(logBuf, "", log.LstdFlags)
 
 func main() {
 	p := flag.Int("port", port, "WebUI监听端口")
@@ -56,8 +57,8 @@ func main() {
 	}()
 	getters.Proxy = *proxy
 	workers.Proxy = *proxy
-	l := log.New(logBuf, "", log.LstdFlags)
-	api.Logger = l
+	api.Logger = logger
+	logger.Print("软件启动成功.")
 	fmt.Printf("正在\"%s\"处监听WebUI...\n", s)
 	if !*nt || runtime.GOOS == "windows" {
 		time.Sleep(time.Second * 2)

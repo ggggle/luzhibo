@@ -328,27 +328,33 @@ func httpGet(url string) (data string, err error) {
 }
 
 func checkUpdate() string {
+	s := fmt.Sprint("更新检测,结果:")
 	r := strconv.Itoa(ver) + "|"
 	if updated || updatting {
 		r += "null"
 	} else {
 		data, err := httpGet("https://api.github.com/repos/Baozisoftware/luzhibo/releases/latest")
-		if err == nil {
+		if err == il {
 			if data != "" {
 				reg, _ := regexp.Compile("Ver (\\d{10})")
 				data = reg.FindStringSubmatch(data)[1]
 				if v, _ := strconv.Atoi(data); v > ver {
+					s += fmt.Sprintf("有新版本(%d->%d).", ver, v)
 					r += data
 				} else {
+					s += fmt.Sprintf("无新版本(当前版本%d).", ver)
 					r += "null"
 				}
 			} else {
+				s += fmt.Sprint("获取服务器版本号失败.")
 				r += "null"
 			}
 		} else {
+			s += fmt.Sprint("获取服务器版本号失败.")
 			r += "null"
 		}
 	}
+	logger.Print(s)
 	return r
 }
 
