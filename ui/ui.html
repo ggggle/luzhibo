@@ -467,6 +467,19 @@
                 });
             }
         }
+
+        function showLogs() {
+            $("button").attr("disabled", "disabled");
+            showTip("正在获取运行日志...", 0);
+            doAjax("log", "", function (ret) {
+                $("#logs").val(ret);
+                $("#logDialog").modal('show');
+                $("button").removeAttr("disabled");
+            }, function () {
+                showTip("请求后端失败.", 3);
+                $("button").removeAttr("disabled");
+            });
+        }
     </script>
 </head>
 
@@ -486,9 +499,14 @@
             <div class="page-header ">
                 <h1><span class="glyphicon glyphicon-facetime-video"></span> 录直播
                     <small id="tver"></small>
-                    <button class="btn btn-mini btn-danger" style="float:right" type="button" onclick="quit()"><span
-                            class="glyphicon glyphicon-log-out"></span> 退出程序
-                    </button>
+                    <div style="float:right">
+                        <button class="btn btn-mini btn-info" onclick="showLogs()"><span
+                                class="glyphicon glyphicon-tag"></span> 查看日志
+                        </button>
+                        <button class="btn btn-mini btn-danger" type="button" onclick="quit()"><span
+                                class="glyphicon glyphicon-log-out"></span> 退出程序
+                        </button>
+                    </div>
                 </h1>
             </div>
             <div style="text-align:center">
@@ -668,6 +686,31 @@
                         <label><span class="glyphicon glyphicon-film"></span> 直播地址(一行一个):</label>
                         <label for="addTask_url"></label><textarea class="form-control" id="addTask_urls"
                                                                    rows="5" title=""></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-ok"></span> 添加
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!--运行日志遮罩层-->
+<div class="modal fade" id="logDialog" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form onsubmit="return addTasksAction()">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                        ×
+                    </button>
+                    <h4 class="modal-title"><span class="glyphicon glyphicon-tags"></span> 运行日志</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="addTask_url"></label><textarea class="form-control" id="logs"
+                                                                   rows="15" title="" readonly="readonly"></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
