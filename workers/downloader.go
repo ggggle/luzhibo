@@ -2,7 +2,6 @@ package workers
 
 import (
 	"bytes"
-	"fmt"
 	"io"
 	"net/http"
 	nurl "net/url"
