@@ -148,5 +148,5 @@ set TPATH=releases\%TNAME%
 echo Building %TNAME%...
 go build -ldflags=%LDFLAGS% -o %TPATH% %PNAME%
 if exist %SPATH%\resource.syso del %SPATH%\resource.syso
-%BPATH%upx --best -q %TPATH%
+%BPATH%upx --lzma --best -q %TPATH%
 goto:eof
