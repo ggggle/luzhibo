@@ -2,6 +2,7 @@ package workers
 
 import (
 	"bytes"
+	"fmt"
 	"io"
 	"net/http"
 	nurl "net/url"
@@ -86,6 +87,9 @@ func (i *downloader) GetTaskInfo(g bool) (int64, bool, int64, string, *getters.L
 func (i *downloader) http(url, filepath string) {
 	ec := int64(0) //正常停止
 	defer func() {
+		if err := recover(); err != nil {
+			fmt.Println(err)
+		}
 		if !i.run {
 			i.ch <- true
 		}
@@ -131,14 +135,11 @@ func (i *downloader) http(url, filepath string) {
 		select {
 		case <-i.ch3:
 			i.run = false
-			close(ch)
-			return
 		case <-ch:
 		case <-time.After(time.Minute * 5):
 			ec = 6 //超时未发送数据
 		}
-		close(ch)
-		if ec > 0 {
+		if ec > 0 || !i.run {
 			return
 		}
 	}
