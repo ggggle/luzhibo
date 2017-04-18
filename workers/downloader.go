@@ -87,9 +87,6 @@ func (i *downloader) GetTaskInfo(g bool) (int64, bool, int64, string, *getters.L
 func (i *downloader) http(url, filepath string) {
 	ec := int64(0) //正常停止
 	defer func() {
-		if err := recover(); err != nil {
-			fmt.Println(err)
-		}
 		if !i.run {
 			i.ch <- true
 		}
