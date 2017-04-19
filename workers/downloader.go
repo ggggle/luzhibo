@@ -172,7 +172,7 @@ func (i *downloader) ffmpeg(url, filepath string) {
 	if Proxy != "" {
 		_, err := nurl.Parse(url)
 		if err == nil {
-			cmd = exec.Command("ffmpeg", "-y", "-i", i.url, "-vcodec", "copy", "-acodec", "copy", "http_proxy", Proxy, i.filePath)
+			cmd = exec.Command("ffmpeg", "-y", "-i", i.url, "-vcodec", "copy", "-acodec", "copy", "-http_proxy", Proxy, i.filePath)
 		}
 	}
 	go func() {
