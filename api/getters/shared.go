@@ -38,6 +38,7 @@ func httpGetResp(url, ua string) (resp *http.Response, err error) {
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err == nil {
 		client := nhttp.NewHttpClient()
+		client.SetResponseHeaderTimeout(30)
 		client.SetProxy(Proxy)
 		req.Header.Set("User-Agent", ua)
 		resp, err = client.Do(req)

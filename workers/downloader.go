@@ -1,7 +1,6 @@
 package workers
 
 import (
-	"bytes"
 	"io"
 	"net/http"
 	nurl "net/url"
@@ -22,6 +21,7 @@ type downloader struct {
 	run      bool
 	ch       chan bool
 	ch2      chan bool
+	ch3      chan bool
 	fm       bool
 	client   *nhttp.HttpClient
 }
@@ -46,6 +46,7 @@ func (i *downloader) Start() {
 	i.run = true
 	i.ch = make(chan bool, 0)
 	i.ch2 = make(chan bool, 1)
+	i.ch3 = make(chan bool, 0)
 	if i.fm {
 		go i.ffmpeg(i.url, i.filePath)
 	} else {
@@ -58,9 +59,11 @@ func (i *downloader) Stop() {
 	if i.run {
 		i.ch2 <- true
 		i.run = false
+		i.ch3 <- true
 		<-i.ch
 		close(i.ch)
 		close(i.ch2)
+		close(i.ch3)
 	}
 }
 
@@ -92,7 +95,8 @@ func (i *downloader) http(url, filepath string) {
 			i.cb(ec)
 		}
 	}()
-	resp, err := httpGetResp(url)
+	client, resp, err := httpGetResp(url)
+	client.SetReadBodyTimeout(300)
 	if err != nil || resp.StatusCode != 200 {
 		ec = 2 //请求时错误
 		return
@@ -104,30 +108,41 @@ func (i *downloader) http(url, filepath string) {
 		return
 	}
 	defer f.Close()
-	buf := make([]byte, bytes.MinRead)
-	for i.run {
-		t, err := resp.Body.Read(buf)
-		if err != nil {
-			if err == io.EOF {
-				f.Write(buf[:t])
+	go func() {
+		for i.run {
+			data, err := client.ReadBodyWithTimeOut(resp)
+			if err != nil {
+				if err == io.EOF {
+					_, err = f.Write(data)
+					if err != nil {
+						ec = 5 //写入文件错误
+					}
+				} else {
+					ec = 4 //下载数据错误
+				}
 			} else {
-				ec = 4 //下载数据错误
+				_, err = f.Write(data)
+				if err != nil {
+					ec = 5 //写入文件错误
+				}
 			}
-			return
+			if ec > 0 {
+				break
+			}
 		}
-		_, err = f.Write(buf[:t])
-		if err != nil {
-			ec = 5 //写入文件错误
-			return
+		if i.run {
+			i.ch3 <- true
 		}
-	}
+	}()
+	<-i.ch3
 }
 
-func httpGetResp(url string) (resp *http.Response, err error) {
+func httpGetResp(url string) (client *nhttp.HttpClient, resp *http.Response, err error) {
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err == nil {
-		client := nhttp.NewHttpClient()
+		client = nhttp.NewHttpClient()
 		client.SetProxy(Proxy)
+		client.SetResponseHeaderTimeout(30)
 		resp, err = client.Do(req)
 	}
 	return
