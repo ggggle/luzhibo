@@ -110,7 +110,7 @@ func (i *downloader) http(url, filepath string) {
 	defer f.Close()
 	go func() {
 		for i.run {
-			data, err := client.ReadBodyWithTimeOut(resp)
+			data, err := client.ReadBodyWithTimeout(resp)
 			if err != nil {
 				if err == io.EOF {
 					_, err = f.Write(data)
