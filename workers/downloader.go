@@ -116,6 +116,8 @@ func (i *downloader) http(url, filepath string) {
 					_, err = f.Write(data)
 					if err != nil {
 						ec = 5 //写入文件错误
+					} else {
+						break
 					}
 				} else {
 					ec = 4 //下载数据错误
