@@ -44,12 +44,15 @@ func (i *longzhu) GetRoomInfo(url string) (id string, live bool, err error) {
 	reg, _ := regexp.Compile("longzhu\\.com/(\\w+)")
 	id = reg.FindStringSubmatch(url)[1]
 	if id != "" {
-		url = "http://searchapi.plu.cn/api/search/room?title=" + id
+		url := "http://roomapicdn.plu.cn/room/RoomAppStatusV2?domain=" + id
 		var tmp string
 		tmp, err = httpGet(url)
-		json := pruseJSON(tmp).JTokens("items")
-		if len(json) > 0 {
-			live = (*json[0].JToken("live"))["isLive"].(bool)
+		if err == nil {
+			if strings.Contains(tmp, "IsBroadcasting") {
+				live = strings.Contains(tmp, "\"IsBroadcasting\":true")
+			} else {
+				id = ""
+			}
 		}
 	}
 	if id == "" {
