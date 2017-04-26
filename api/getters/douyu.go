@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"regexp"
+	"strconv"
 	"strings"
 )
 
@@ -41,10 +42,39 @@ func (i *douyu) GetRoomInfo(url string) (id string, live bool, err error) {
 		}
 	}()
 	html, err := httpGet(url)
-	reg, _ := regexp.Compile("\\\\?\"room_id\\\\?\":(\\d+)")
-	tmp := reg.FindString(html)
-	live = !strings.Contains(html, "上次直播")
-	id = reg.FindStringSubmatch(tmp)[1]
+	if strings.Contains(html, "online_id") {
+		reg, _ := regexp.Compile("roomIndex=(\\d+)")
+		tmpA := reg.FindStringSubmatch(url)
+		index := 0
+		if len(tmpA) == 2 {
+			index, _ = strconv.Atoi(tmpA[1])
+		}
+		reg, _ = regexp.Compile("\"online_id\":[\"\\[]([\",\\d]+)[\"\\]]")
+		tmpB := reg.FindAllStringSubmatch(html, 2)
+		ti := 0
+		if len(tmpB) == 2 {
+			ti = 1
+		}
+		ids := strings.Split(tmpB[ti][1], ",")
+		lids := len(ids)
+		if index > lids {
+			index = lids - 1
+		}
+		id = ids[index]
+		id = strings.Replace(id, "\"", "", -1)
+		url = fmt.Sprintf("http://www.douyu.com/ztCache/WebM/room/%s", id)
+		html, err = httpGet(url)
+		if err == nil && html != "[]" {
+			live = strings.Contains(html, "\\\"show_status\\\":1")
+		} else {
+			id = ""
+		}
+	} else {
+		reg, _ := regexp.Compile("\\\\?\"room_id\\\\?\":(\\d+)")
+		tmp := reg.FindString(html)
+		live = !strings.Contains(html, "上次直播")
+		id = reg.FindStringSubmatch(tmp)[1]
+	}
 	if id == "" {
 		err = errors.New("fail get data")
 	}
