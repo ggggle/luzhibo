@@ -3,12 +3,8 @@ package workers
 import (
 	"io"
 	"net/http"
-	nurl "net/url"
 	"os"
-	"os/exec"
 	"path"
-	"syscall"
-
 	nhttp"github.com/Baozisoftware/golibraries/http"
 	"github.com/Baozisoftware/luzhibo/api/getters"
 )
@@ -171,14 +167,7 @@ func (i *downloader) ffmpeg(url, filepath string) {
 		ec = 3
 		return
 	}
-	cmd := exec.Command("ffmpeg", "-y", "-i", i.url, "-vcodec", "copy", "-acodec", "copy", i.filePath)
-	if Proxy != "" {
-		_, err := nurl.Parse(url)
-		if err == nil {
-			cmd = exec.Command("ffmpeg", "-y", "-i", i.url, "-vcodec", "copy", "-acodec", "copy", "-http_proxy", Proxy, i.filePath)
-		}
-	}
-	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
+	cmd := NewFFmpeg(i.url, i.filePath)
 	go func() {
 		if err := cmd.Start(); err != nil {
 			ec = 6 //ffmpeg启动失败
