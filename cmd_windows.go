@@ -51,6 +51,9 @@ func quit() {
 	if htaproc != nil {
 		htaproc.Kill()
 	}
+	for _, v := range tasks {
+		v.worker.Stop()
+	}
 	os.Exit(0)
 }
 

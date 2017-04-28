@@ -7,6 +7,7 @@ import (
 	"os"
 	"os/exec"
 	"path"
+	"syscall"
 
 	nhttp"github.com/Baozisoftware/golibraries/http"
 	"github.com/Baozisoftware/luzhibo/api/getters"
@@ -46,7 +47,7 @@ func (i *downloader) Start() {
 	i.run = true
 	i.ch = make(chan bool, 0)
 	i.ch2 = make(chan bool, 1)
-	i.ch3 = make(chan bool, 0)
+	i.ch3 = make(chan bool, 1)
 	if i.fm {
 		go i.ffmpeg(i.url, i.filePath)
 	} else {
@@ -177,6 +178,7 @@ func (i *downloader) ffmpeg(url, filepath string) {
 			cmd = exec.Command("ffmpeg", "-y", "-i", i.url, "-vcodec", "copy", "-acodec", "copy", "-http_proxy", Proxy, i.filePath)
 		}
 	}
+	cmd.SysProcAttr = &syscall.SysProcAttr{HideWindow: true}
 	go func() {
 		if err := cmd.Start(); err != nil {
 			ec = 6 //ffmpeg启动失败

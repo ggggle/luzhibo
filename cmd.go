@@ -166,5 +166,8 @@ func openWebUI(hta bool) {
 }
 
 func quit() {
+	for _, v := range tasks {
+		v.worker.Stop()
+	}
 	os.Exit(0)
 }
