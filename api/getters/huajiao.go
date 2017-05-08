@@ -6,8 +6,6 @@ import (
 	"fmt"
 	"regexp"
 	"strings"
-
-	"github.com/PuerkitoBio/goquery"
 )
 
 //huajiao 花椒直播
@@ -43,15 +41,15 @@ func (i *huajiao) GetRoomInfo(url string) (id string, live bool, err error) {
 			err = errors.New("fail get data")
 		}
 	}()
-	url = strings.ToLower(url)
-	reg, _ := regexp.Compile("huajiao\\.com/l/(\\d+)")
-	id = reg.FindStringSubmatch(url)[1]
-	url = "http://h.huajiao.com/l/index?liveid=" + id
-	tmp, err := httpGet(url)
-	if !strings.Contains(tmp, "err-d4bcf8ad0d.png") {
-		live = !strings.Contains(tmp, "直播已结束")
-	} else {
-		err = errors.New("fail get data")
+	html, err := httpGet(url)
+	if err == nil {
+		reg, _ := regexp.Compile("\"uid\":\"(\\d+)\"")
+		id = reg.FindStringSubmatch(html)[1]
+		url = "http://webh.huajiao.com/User/getUserFeeds?uid=" + id
+		html, err = httpGet(url)
+		if err == nil {
+			live = strings.Contains(html, "\"replay_status\":0")
+		}
 	}
 	if id == "" {
 		err = errors.New("fail get data")
@@ -67,20 +65,12 @@ func (i *huajiao) GetLiveInfo(id string) (live LiveInfo, err error) {
 		}
 	}()
 	live = LiveInfo{RoomID: id}
-	url := "http://h.huajiao.com/l/index?liveid=" + id
-
-	resp, err := httpGetResp(url, "")
-	doc, err := goquery.NewDocumentFromResponse(resp)
-	n := doc.Find("script[type=\"text/javascript\"]")
-	tmp := n.Text()
-	x, y := strings.Index(tmp, "{")+1, strings.LastIndex(tmp, "}")
-	tmp = tmp[x:y]
-	tmp = strings.Split(tmp, "\n")[1]
-	x, y = strings.Index(tmp, "{"), len(tmp)-1
-	tmp = tmp[x:y]
-	json := pruseJSON(tmp)
+	url := "http://webh.huajiao.com/User/getUserFeeds?uid=" + id
+	tmp, err := httpGet(url)
+	json := pruseJSON(tmp).JToken("data").JTokens("feeds")[0]
 	author, feed := *(json.JToken("author")), *(json.JToken("feed"))
 	sn := feed["sn"]
+	img := feed["image"].(string)
 	nick := author["nickname"].(string)
 	title := feed["title"].(string)
 	url = fmt.Sprintf("http://g2.live.360.cn/liveplay?stype=flv&channel=live_huajiao_v2&bid=huajiao&sn=%s&sid=null&_rate=null&ts=null", sn)
@@ -91,7 +81,7 @@ func (i *huajiao) GetLiveInfo(id string) (live LiveInfo, err error) {
 	json = pruseJSON(tmp)
 	video := (*json)["main"].(string)
 	live.LiveNick = nick
-	live.LivingIMG = ""
+	live.LivingIMG = img
 	live.RoomDetails = ""
 	live.RoomTitle = title
 	live.VideoURL = video
