@@ -3,6 +3,7 @@ package getters
 import (
 	"errors"
 	"regexp"
+	"strings"
 )
 
 //yi 一直播
@@ -38,17 +39,14 @@ func (i *yi) GetRoomInfo(url string) (id string, live bool, err error) {
 			err = errors.New("fail get data")
 		}
 	}()
-	reg, _ := regexp.Compile("yizhibo\\.com/l/(\\S+)\\.html")
-	id = reg.FindStringSubmatch(url)[1]
-	if id != "" {
-		url = "http://api.xiaoka.tv/live/web/get_play_live?scid=" + id
-		var tmp string
-		tmp, err = httpGet(url)
-		json := pruseJSON(tmp)
-		if (*json)["result"].(float64) == 1 {
-			live = (*json.JToken("data"))["status"].(float64) == 10
-		} else {
-			id = ""
+	html, err := httpGet(url)
+	if err == nil {
+		reg, _ := regexp.Compile("memberid:(\\d+)")
+		id = reg.FindStringSubmatch(html)[1]
+		url = "http://www.yizhibo.com/member/personel/user_works?memberid=" + id
+		html, err = httpGet(url)
+		if err == nil {
+			live = strings.Contains(html, "index_all_common index_zb")
 		}
 	}
 	if id == "" {
@@ -65,20 +63,28 @@ func (i *yi) GetLiveInfo(id string) (live LiveInfo, err error) {
 		}
 	}()
 	live = LiveInfo{RoomID: id}
-	url := "http://api.xiaoka.tv/live/web/get_play_live?scid=" + id
-	tmp, err := httpGet(url)
-	json := *(pruseJSON(tmp).JToken("data"))
-	nick := json["nickname"].(string)
-	title := json["title"].(string)
-	video := json["linkurl"].(string)
-	img := json["cover"].(string)
-	img = "http://alcdn.img.xiaoka.tv/" + img
-	live.LiveNick = nick
-	live.RoomTitle = title
-	live.RoomDetails = ""
-	live.LivingIMG = img
-	live.VideoURL = video
-	if video == "" {
+	url := "http://www.yizhibo.com/member/personel/user_works?memberid=" + id
+	html, err := httpGet(url)
+	if err == nil {
+		reg, _ := regexp.Compile("/l/(\\S+)\\.html")
+		id = reg.FindStringSubmatch(html)[1]
+		if id!="" {
+			url = "http://api.xiaoka.tv/live/web/get_play_live?scid=" + id
+			html, err = httpGet(url)
+			json := *(pruseJSON(html).JToken("data"))
+			nick := json["nickname"].(string)
+			title := json["title"].(string)
+			video := json["linkurl"].(string)
+			img := json["cover"].(string)
+			img = "http://alcdn.img.xiaoka.tv/" + img
+			live.LiveNick = nick
+			live.RoomTitle = title
+			live.RoomDetails = ""
+			live.LivingIMG = img
+			live.VideoURL = video
+		}
+	}
+	if live.VideoURL == "" {
 		err = errors.New("fail get data")
 	}
 	return
