@@ -39,13 +39,14 @@ func (i *yi) GetRoomInfo(url string) (id string, live bool, err error) {
 			err = errors.New("fail get data")
 		}
 	}()
+	reg, _ := regexp.Compile("yizhibo\\.com/member/personel/user_info\\?memberid=(\\d+)")
+	id = reg.FindStringSubmatch(url)[1]
+	url = "http://www.yizhibo.com/member/personel/user_works?memberid=" + id
 	html, err := httpGet(url)
 	if err == nil {
-		reg, _ := regexp.Compile("memberid:(\\d+)")
-		id = reg.FindStringSubmatch(html)[1]
-		url = "http://www.yizhibo.com/member/personel/user_works?memberid=" + id
-		html, err = httpGet(url)
-		if err == nil {
+		if strings.Contains(html, "window.location=\"/404.html\";") {
+			id = ""
+		} else {
 			live = strings.Contains(html, "index_all_common index_zb")
 		}
 	}
@@ -68,7 +69,7 @@ func (i *yi) GetLiveInfo(id string) (live LiveInfo, err error) {
 	if err == nil {
 		reg, _ := regexp.Compile("/l/(\\S+)\\.html")
 		id = reg.FindStringSubmatch(html)[1]
-		if id!="" {
+		if id != "" {
 			url = "http://api.xiaoka.tv/live/web/get_play_live?scid=" + id
 			html, err = httpGet(url)
 			json := *(pruseJSON(html).JToken("data"))

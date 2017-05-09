@@ -41,13 +41,14 @@ func (i *huajiao) GetRoomInfo(url string) (id string, live bool, err error) {
 			err = errors.New("fail get data")
 		}
 	}()
+	reg, _ := regexp.Compile("huajiao\\.com/user/(\\d+)")
+	id = reg.FindStringSubmatch(url)[1]
+	url = "http://webh.huajiao.com/User/getUserFeeds?uid=" + id
 	html, err := httpGet(url)
 	if err == nil {
-		reg, _ := regexp.Compile("\"uid\":\"(\\d+)\"")
-		id = reg.FindStringSubmatch(html)[1]
-		url = "http://webh.huajiao.com/User/getUserFeeds?uid=" + id
-		html, err = httpGet(url)
-		if err == nil {
+		if strings.Contains(html,"\"data\":[]}") {
+			id=""
+		}else {
 			live = strings.Contains(html, "\"replay_status\":0")
 		}
 	}
