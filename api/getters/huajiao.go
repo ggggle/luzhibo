@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"regexp"
 	"strings"
+	"strconv"
 )
 
 //huajiao 花椒直播
@@ -46,9 +47,9 @@ func (i *huajiao) GetRoomInfo(url string) (id string, live bool, err error) {
 	url = "http://webh.huajiao.com/User/getUserFeeds?uid=" + id
 	html, err := httpGet(url)
 	if err == nil {
-		if strings.Contains(html,"\"data\":[]}") {
-			id=""
-		}else {
+		if strings.Contains(html, "\"data\":[]}") {
+			id = ""
+		} else {
 			live = strings.Contains(html, "\"replay_status\":0")
 		}
 	}
@@ -66,13 +67,17 @@ func (i *huajiao) GetLiveInfo(id string) (live LiveInfo, err error) {
 		}
 	}()
 	live = LiveInfo{RoomID: id}
-	url := "http://webh.huajiao.com/User/getUserFeeds?uid=" + id
+	url := "http://www.huajiao.com/user/" + id
 	tmp, err := httpGet(url)
+	reg, _ := regexp.Compile("\"nickname\":(\"[^\"]*\")")
+	nick := reg.FindStringSubmatch(tmp)[1]
+	nick, _ = strconv.Unquote(nick)
+	url = "http://webh.huajiao.com/User/getUserFeeds?uid=" + id
+	tmp, err = httpGet(url)
 	json := pruseJSON(tmp).JToken("data").JTokens("feeds")[0]
-	author, feed := *(json.JToken("author")), *(json.JToken("feed"))
+	feed := *(json.JToken("feed"))
 	sn := feed["sn"]
 	img := feed["image"].(string)
-	nick := author["nickname"].(string)
 	title := feed["title"].(string)
 	url = fmt.Sprintf("http://g2.live.360.cn/liveplay?stype=flv&channel=live_huajiao_v2&bid=huajiao&sn=%s&sid=null&_rate=null&ts=null", sn)
 	tmp, err = httpGet(url)
