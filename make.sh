@@ -43,7 +43,7 @@ go get github.com/Baozisoftware/qrcode-terminal-go
 go get github.com/mattn/go-isatty
 go get github.com/lxn/walk
 go get github.com/dkua/go-ico
-go get github.com/Knetic/govaluate
+go get gopkg.in/Knetic/govaluate.v3
 go get github.com/lxn/win
 go get github.com/inconshreveable/go-update
 go get github.com/Baozisoftware/GoldenDaemon
