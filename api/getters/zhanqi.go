@@ -70,7 +70,7 @@ func (i *zhanqi) GetLiveInfo(id string) (live LiveInfo, err error) {
 	title := json["title"].(string)
 	img := json["bpic"].(string)
 	key := json["videoId"].(string)
-	video := fmt.Sprintf("http://wshdl.load.cdn.zhanqi.tv/zqlive/%s.flv", key)
+	video := fmt.Sprintf("http://wshdl.cdn.zhanqi.tv/zqlive/%s.flv", key)
 	live.LiveNick = nick
 	live.RoomTitle = title
 	live.LivingIMG = img
