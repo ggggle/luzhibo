@@ -42,7 +42,7 @@ func (i *panda) GetRoomInfo(url string) (id string, live bool, err error) {
 		}
 	}()
 	url = strings.ToLower(url)
-	reg, _ := regexp.Compile("panda\\.tv/(\\d+)")
+	reg, _ := regexp.Compile("www\\.panda\\.tv/(\\d+)")
 	id = reg.FindStringSubmatch(url)[1]
 	url = "http://www.panda.tv/ajax_search?roomid=" + id
 	tmp, err := httpGet(url)

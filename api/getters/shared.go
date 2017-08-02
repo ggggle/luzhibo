@@ -5,7 +5,6 @@ import (
 	"encoding/hex"
 	"errors"
 	"io/ioutil"
-	"math/rand"
 	"net/http"
 	"reflect"
 	"strings"
@@ -137,11 +136,6 @@ func pruseJSON(data string) *json.JObject {
 	return json.PruseJSON(data)
 }
 
-func randInt64(min, max int64) int64 {
-	rand.Seed(time.Now().Unix())
-	return min + rand.Int63n(max-min)
-}
-
 //LiveInfo 直播间信息结构
 type LiveInfo struct {
 	RoomTitle   string
@@ -165,7 +159,7 @@ type Getter interface {
 
 //Getters 所有获取接口
 func Getters() []Getter {
-	return []Getter{&douyu{}, &panda{}, &zhanqi{}, &longzhu{}, &huya{}, &qie{}, &bilibili{}, &quanmin{}, &huajiao{}, &huomao{}, &yi{}, &qiedianjing{}, &chushou{}, &inke{}, &afreeca{}}
+	return []Getter{&douyu{}, &panda{}, &zhanqi{}, &longzhu{}, &huya{}, &qie{}, &bilibili{}, &quanmin{}, &huajiao{}, &huomao{}, &yi{}, &qiedianjing{}, &chushou{}, &inke{}, &afreeca{}, &xingyan{}}
 }
 
 var Proxy = ""

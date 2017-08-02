@@ -98,20 +98,21 @@ func (i *LuzhiboAPI) GetLiveInfo() (live getters.LiveInfo, err error) {
 func getGetter(url string) getters.Getter {
 	url = strings.ToLower(url)
 	regs := []string{"(douyu\\.tv)|((douyu)|(douyutv)\\.com)",
-					 "panda\\.tv",
-					 "zhanqi\\.tv",
-					 "longzhu\\.com",
-					 "huya\\.com",
-					 "live\\.qq\\.com",
-					 "live\\.bilibili\\.com",
-					 "quanmin\\.tv",
-					 "huajiao\\.com",
-					 "huomao\\.com",
-					 "yizhibo\\.com",
-					 "egame.qq\\.com",
-					 "chushou\\.tv",
-					 "inke\\.cn",
-					 "play\\.afreecatv\\.com"}
+		"www\\.panda\\.tv",
+		"zhanqi\\.tv",
+		"longzhu\\.com",
+		"huya\\.com",
+		"live\\.qq\\.com",
+		"live\\.bilibili\\.com",
+		"quanmin\\.tv",
+		"huajiao\\.com",
+		"huomao\\.com",
+		"yizhibo\\.com",
+		"egame.qq\\.com",
+		"chushou\\.tv",
+		"inke\\.cn",
+		"play\\.afreecatv\\.com",
+		"xingyan\\.panda\\.tv"}
 	gs := getters.Getters()
 	for i := 0; i < len(gs); i++ {
 		if ok, _ := regexp.MatchString(regs[i], url); ok {
