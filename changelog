@@ -2,6 +2,9 @@
 *Updated*
 ~~Fixed or Removed~~
 
+[2017080500]
+~~douyu bug~~
+
 [2017080200]
 **xingyan support**
 
@@ -75,7 +78,7 @@
 ~~bugs~~
 
 [2017033101]
-~~douyu bugs~~
+~~douyu bug~~
 
 [2017033100]
 *WebUI & core*
@@ -112,7 +115,7 @@
 [2017032500]
 **chushou support**
 *WebUI*
-~~quanmin bugs~~
+~~quanmin bug~~
 
 [2017032402]
 **qiedianjing support**
@@ -121,4 +124,4 @@
 **version check**
 **https support**
 *WebUI*
-~~huajiao bugs~~
+~~huajiao bug~~
