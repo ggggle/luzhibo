@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"regexp"
 	"strings"
-
-	"github.com/PuerkitoBio/goquery"
 )
 
 //huya 虎牙直播
@@ -67,37 +65,25 @@ func (i *huya) GetLiveInfo(id string) (live LiveInfo, err error) {
 	}()
 	live = LiveInfo{RoomID: id}
 	url := "http://m.huya.com/" + id
-	resp, err := httpGetResp(url, ipadUA)
-	doc, err := goquery.NewDocumentFromResponse(resp)
-	n := doc.Find("div.live-info-desc")
-	nick := n.Find("h2").Text()
-	title := n.Find("h1").Text()
-	details := doc.Find("div.notice_content").Text()
-	details = strings.TrimSpace(details)
-	n = doc.Find("video#html5player-video")
-	img, _ := n.Attr("poster")
-	t, _ := doc.Find("source").Attr("src")
-	reg, _ := regexp.Compile("\\d+-\\d+")
-	t = reg.FindString(t)
-	t = strings.Replace(t, "-", "_", -1)
-	if t == "" {
-		t, _ = doc.Find("source").Attr("src")
-		reg, _ := regexp.Compile("\\d+_\\d+")
-		t = reg.FindString(t)
-	}
-
-	if t != "" {
-		video := fmt.Sprintf("http://hls.yy.com/%s_100571200.flv", t)
-		live.LiveNick = nick
-		live.LivingIMG = img
-		live.RoomDetails = details
-		live.RoomTitle = title
-		live.VideoURL = video
-	} else {
-		err = errors.New("faild get data")
-	}
+	html, err := httpGetWithUA(url, ipadUA)
+	title := getValue(html, "liveRoomName")
+	nick := getValue(html, "ANTHOR_NICK")
+	img := getValue(html, "picURL")
+	reg, _ := regexp.Compile("cid: '(\\d+/\\d+)'")
+	cid := strings.Replace(reg.FindStringSubmatch(html)[1], "/", "_", 1)
+	video := fmt.Sprintf("http://hls.yy.com/%s_100571200.flv", cid)
+	live.LiveNick = nick
+	live.LivingIMG = img
+	live.RoomDetails = ""
+	live.RoomTitle = title
+	live.VideoURL = video
 	if live.VideoURL == "" {
 		err = errors.New("fail get data")
 	}
 	return
+}
+
+func getValue(data, name string) string {
+	reg, _ := regexp.Compile("var " + name + " = [\"'](.*)[\"']")
+	return reg.FindStringSubmatch(data)[1]
 }
