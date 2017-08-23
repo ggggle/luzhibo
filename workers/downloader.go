@@ -93,8 +93,7 @@ func (i *downloader) http(url, filepath string) {
 			i.cb(ec)
 		}
 	}()
-	client, resp, err := httpGetResp(url)
-	client.SetResponseHeaderTimeout(300)
+	resp, err := httpGetResp(url)
 	if err != nil || resp.StatusCode != 200 {
 		ec = 2 //请求时错误
 		return
@@ -139,12 +138,13 @@ func (i *downloader) http(url, filepath string) {
 	<-i.ch3
 }
 
-func httpGetResp(url string) (client *nhttp.HttpClient, resp *http.Response, err error) {
+func httpGetResp(url string) (resp *http.Response, err error) {
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err == nil {
-		client = nhttp.NewHttpClient()
+		client := nhttp.NewHttpClient()
 		client.SetProxy(Proxy)
 		client.SetResponseHeaderTimeout(30)
+		client.SetBodyTimeout(300)
 		resp, err = client.Do(req)
 	}
 	return
