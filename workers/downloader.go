@@ -7,6 +7,7 @@ import (
 	"path"
 	nhttp"github.com/Baozisoftware/golibraries/http"
 	"github.com/Baozisoftware/luzhibo/api/getters"
+	"bytes"
 )
 
 //下载器
@@ -93,7 +94,7 @@ func (i *downloader) http(url, filepath string) {
 		}
 	}()
 	client, resp, err := httpGetResp(url)
-	client.SetReadBodyTimeout(300)
+	client.SetResponseHeaderTimeout(300)
 	if err != nil || resp.StatusCode != 200 {
 		ec = 2 //请求时错误
 		return
@@ -107,10 +108,12 @@ func (i *downloader) http(url, filepath string) {
 	defer f.Close()
 	go func() {
 		for i.run {
-			data, err := client.ReadBodyWithTimeout(resp)
+			buf := make([]byte, bytes.MinRead)
+			var t int
+			t, err = resp.Body.Read(buf)
 			if err != nil {
 				if err == io.EOF {
-					_, err = f.Write(data)
+					_, err = f.Write(buf[:t])
 					if err != nil {
 						ec = 5 //写入文件错误
 					} else {
@@ -120,7 +123,7 @@ func (i *downloader) http(url, filepath string) {
 					ec = 4 //下载数据错误
 				}
 			} else {
-				_, err = f.Write(data)
+				_, err = f.Write(buf[:t])
 				if err != nil {
 					ec = 5 //写入文件错误
 				}

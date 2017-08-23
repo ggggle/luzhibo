@@ -19,7 +19,7 @@ import (
 	"github.com/Baozisoftware/luzhibo/workers"
 )
 
-const ver = 2017081300
+const ver = 2017082300
 const p = "录直播"
 
 var port = 12216
