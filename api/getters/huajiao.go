@@ -7,6 +7,7 @@ import (
 	"regexp"
 	"strings"
 	"strconv"
+	json2 "github.com/Baozisoftware/golibraries/json"
 )
 
 //huajiao 花椒直播
@@ -74,8 +75,20 @@ func (i *huajiao) GetLiveInfo(id string) (live LiveInfo, err error) {
 	nick, _ = strconv.Unquote(nick)
 	url = "http://webh.huajiao.com/User/getUserFeeds?uid=" + id
 	tmp, err = httpGet(url)
-	json := pruseJSON(tmp).JToken("data").JTokens("feeds")[0]
-	feed := *(json.JToken("feed"))
+	json := pruseJSON(tmp).JToken("data")
+	feeds := json.JTokens("feeds")
+	var tf *json2.JObject
+	for _, v := range feeds {
+		if (*v)["type"].(float64) == 1 {
+			tf = v.JToken("feed")
+			break
+		}
+	}
+	if tf == nil {
+		err = errors.New("fail get data")
+		return
+	}
+	feed := *tf
 	sn := feed["sn"]
 	img := feed["image"].(string)
 	title := feed["title"].(string)
