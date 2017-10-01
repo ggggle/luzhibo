@@ -22,3 +22,8 @@ _testmain.go
 *.exe
 *.test
 *.prof
+.idea/dictionaries/ggggle.xml
+.idea/luzhibo.iml
+.idea/modules.xml
+.idea/vcs.xml
+.idea/workspace.xml
