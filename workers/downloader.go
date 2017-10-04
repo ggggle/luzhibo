@@ -6,11 +6,13 @@ import (
 	"os"
 	"path"
 	nhttp"github.com/Baozisoftware/golibraries/http"
-	"github.com/Baozisoftware/luzhibo/api/getters"
+	"github.com/ggggle/luzhibo/api/getters"
 	"bytes"
+    "github.com/ggggle/luzhibo/api"
 )
 
 //下载器
+var ONE_PIECE_SIZE int64 = 2 * 1024
 
 type downloader struct {
 	url      string
@@ -124,8 +126,14 @@ func (i *downloader) http(url, filepath string) {
 			} else {
 				_, err = f.Write(buf[:t])
 				if err != nil {
-					ec = 5 //写入文件错误
-				}
+                    ec = 5 //写入文件错误
+                } else {
+                    fileInfo, _ := f.Stat()
+                    if (fileInfo.Size() >= ONE_PIECE_SIZE){
+                        api.Logger.Print(fileInfo.Size())
+                        ec = 6    //下一段
+                    }
+                }
 			}
 			if ec > 0 {
 				break

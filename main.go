@@ -14,15 +14,15 @@ import (
 	"time"
 
 	"github.com/Baozisoftware/GoldenDaemon"
-	"github.com/Baozisoftware/luzhibo/api"
-	"github.com/Baozisoftware/luzhibo/api/getters"
-	"github.com/Baozisoftware/luzhibo/workers"
+	"github.com/ggggle/luzhibo/api"
+	"github.com/ggggle/luzhibo/api/getters"
+	"github.com/ggggle/luzhibo/workers"
 )
 
 const ver = 2017091000
 const p = "录直播"
 
-var port = 12216
+var port = 22216
 
 var nhta *bool
 
@@ -42,6 +42,7 @@ func main() {
 	flag.Bool("d", false, "启用后台运行(仅非Windows有效)")
 	nt = flag.Bool("nt", false, "启用无终端交互模式(仅非Windows有效)")
 	proxy = flag.String("proxy", "", "代理服务器(如:\"http://127.0.0.1:8888\".)")
+	pieceSize := flag.Int64("size", workers.ONE_PIECE_SIZE, "片段大小，单位MB")
 	flag.Parse()
 	port = *p
 	s := ":" + strconv.Itoa(port)
@@ -58,6 +59,8 @@ func main() {
 	getters.Proxy = *proxy
 	workers.Proxy = *proxy
 	api.Logger = logger
+	workers.ONE_PIECE_SIZE = *pieceSize * 1024 * 1024
+	logger.Printf("片段大小[%d]MB", *pieceSize)
 	logger.Print("软件启动成功.")
 	fmt.Printf("正在\"%s\"处监听WebUI...\n", s)
 	if !*nt || runtime.GOOS == "windows" {

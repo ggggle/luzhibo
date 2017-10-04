@@ -7,12 +7,12 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/Baozisoftware/luzhibo/api/getters"
+	"github.com/ggggle/luzhibo/api/getters"
 )
 
 //LuzhiboAPI API object
 type LuzhiboAPI struct {
-	id         string
+	Id         string
 	URL        string
 	g          getters.Getter
 	Site       string
@@ -58,7 +58,7 @@ func (i *LuzhiboAPI) GetRoomInfo() (id string, live bool, err error) {
 		return
 	}
 	id, live, err = i.g.GetRoomInfo(i.URL)
-	i.id = id
+	i.Id = id
 	if Logger != nil {
 		s := fmt.Sprintf("获取房间信息\"%s\",结果:", i.URL)
 		if err == nil {
@@ -78,15 +78,15 @@ func (i *LuzhiboAPI) GetRoomInfo() (id string, live bool, err error) {
 
 //GetLiveInfo 取直播信息
 func (i *LuzhiboAPI) GetLiveInfo() (live getters.LiveInfo, err error) {
-	if i.id == "" || i.g == nil {
+	if i.Id == "" || i.g == nil {
 		err = errors.New("not has id or not found getter")
 		return
 	}
-	live, err = i.g.GetLiveInfo(i.id)
+	live, err = i.g.GetLiveInfo(i.Id)
 	if Logger != nil {
 		s := fmt.Sprintf("获取直播信息\"%s\",结果:", i.URL)
 		if err == nil {
-			s += fmt.Sprintf("成功(直播平台:\"%s\",房间ID:\"%s\",房间标题:\"%s\",主播昵称:\"%s\",直播流地址:\"%s\".).", i.Site, i.id, live.RoomTitle, live.LiveNick, live.VideoURL)
+			s += fmt.Sprintf("成功(直播平台:\"%s\",房间ID:\"%s\",房间标题:\"%s\",主播昵称:\"%s\",直播流地址:\"%s\".).", i.Site, i.Id, live.RoomTitle, live.LiveNick, live.VideoURL)
 		} else {
 			s += fmt.Sprint("失败(获取时出错).")
 		}

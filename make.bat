@@ -30,6 +30,11 @@ call:make
 set GOOS=windows
 call:make
 
+:done
+echo All done.
+pause
+goto:eof
+
 :init
 echo Initing...
 go get github.com/josephspurrier/goversioninfo/cmd/goversioninfo
@@ -41,12 +46,7 @@ go get github.com/dkua/go-ico
 go get github.com/inconshreveable/go-update
 go get github.com/Baozisoftware/GoldenDaemon
 go get github.com/Baozisoftware/golibraries
-goto done
-
-:done
-echo All done.
-pause
-goto:eof
+goto:done
 
 :make
 set TNAME=%FNAME%_%GOOS%_%GOARCH%
@@ -54,6 +54,7 @@ set LDFLAGS="-s -w"
 if %GOOS%==windows set TNAME=%TNAME%.exe && go generate %PNAME% && set LDFLAGS="-s -w -H=windowsgui"
 set TPATH=releases\%TNAME%
 echo Building %TNAME%...
+echo %LDFLAGS% ... %TPATH% ... %PNAME%
 go build -ldflags=%LDFLAGS% -o %TPATH% %PNAME%
 if exist %SPATH%\resource.syso del %SPATH%\resource.syso
 %BPATH%upx --lzma --best -q %TPATH%

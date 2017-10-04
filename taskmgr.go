@@ -6,9 +6,9 @@ import (
 	"os"
 	"time"
 	"strings"
-	"github.com/Baozisoftware/luzhibo/api"
-	"github.com/Baozisoftware/luzhibo/workers"
-	"github.com/Baozisoftware/luzhibo/api/getters"
+	"github.com/ggggle/luzhibo/api"
+	"github.com/ggggle/luzhibo/workers"
+	"github.com/ggggle/luzhibo/api/getters"
 	"os/exec"
 )
 

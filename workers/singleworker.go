@@ -1,9 +1,9 @@
 package workers
 
 import (
-	"github.com/Baozisoftware/luzhibo/api"
+	"github.com/ggggle/luzhibo/api"
 	"errors"
-	"github.com/Baozisoftware/luzhibo/api/getters"
+	"github.com/ggggle/luzhibo/api/getters"
 )
 
 //普通模式
