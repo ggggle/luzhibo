@@ -27,3 +27,5 @@ _testmain.go
 .idea/modules.xml
 .idea/vcs.xml
 .idea/workspace.xml
+releases/luzhibo_linux_amd64
+resource.syso111

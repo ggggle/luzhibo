@@ -13,6 +13,8 @@ type bilibili struct{}
 //Site 实现接口
 func (i *bilibili) Site() string { return "Bilibili直播" }
 
+func (i *bilibili) GetExtraInfo(string) (info ExtraInfo, err error) { return }
+
 //SiteURL 实现接口
 func (i *bilibili) SiteURL() string {
 	return "http://live.bilibili.com"

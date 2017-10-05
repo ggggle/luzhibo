@@ -14,6 +14,8 @@ type quanmin struct{}
 //Site 实现接口
 func (i *quanmin) Site() string { return "全民直播" }
 
+func (i *quanmin) GetExtraInfo(string) (info ExtraInfo, err error) { return }
+
 //SiteURL 实现接口
 func (i *quanmin) SiteURL() string {
 	return "http://www.quanmin.tv"

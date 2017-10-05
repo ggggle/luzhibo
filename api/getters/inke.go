@@ -13,6 +13,8 @@ type inke struct{}
 //Site 实现接口
 func (i *inke) Site() string { return "映客直播" }
 
+func (i *inke) GetExtraInfo(string) (info ExtraInfo, err error) { return }
+
 //SiteURL 实现接口
 func (i *inke) SiteURL() string {
 	return "http://www.inke.cn"

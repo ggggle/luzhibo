@@ -95,7 +95,7 @@ func (i *downloader) http(url, filepath string) {
 			i.cb(ec)
 		}
 	}()
-	resp, err := httpGetResp(url)
+	resp, err := httpGetResp(url, false)
 	if err != nil || resp.StatusCode != 200 {
 		ec = 2 //请求时错误
 		return
@@ -118,6 +118,7 @@ func (i *downloader) http(url, filepath string) {
 					if err != nil {
 						ec = 5 //写入文件错误
 					} else {
+					    ec = 7 //直播没有中断，但有可能会走到这里，无需进行5分钟的等待
 						break
 					}
 				} else {
@@ -146,11 +147,13 @@ func (i *downloader) http(url, filepath string) {
 	<-i.ch3
 }
 
-func httpGetResp(url string) (resp *http.Response, err error) {
+func httpGetResp(url string, useProxy bool) (resp *http.Response, err error) {
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err == nil {
 		client := nhttp.NewHttpClient()
-		client.SetProxy(Proxy)
+		if useProxy{
+		    client.SetProxy(Proxy)
+        }
 		client.SetResponseHeaderTimeout(30)
 		client.SetBodyTimeout(300)
 		resp, err = client.Do(req)

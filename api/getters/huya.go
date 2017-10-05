@@ -16,7 +16,9 @@ func (i *huya) SiteURL() string {
 }
 
 //Site 实现接口
-func (i huya) Site() string { return "虎牙直播" }
+func (i *huya) Site() string { return "虎牙直播" }
+
+func (i *huya) GetExtraInfo(string) (info ExtraInfo, err error) { return }
 
 //SiteIcon 实现接口
 func (i *huya) SiteIcon() string {

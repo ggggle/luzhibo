@@ -19,7 +19,9 @@ func (i *chushou) SiteURL() string {
 }
 
 //Site 实现接口
-func (i chushou) Site() string { return "触手直播" }
+func (i *chushou) Site() string { return "触手直播" }
+
+func (i *chushou) GetExtraInfo(string) (info ExtraInfo, err error) { return }
 
 //SiteIcon 实现接口
 func (i *chushou) SiteIcon() string {

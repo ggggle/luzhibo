@@ -14,7 +14,7 @@ import (
 type LuzhiboAPI struct {
 	Id         string
 	URL        string
-	g          getters.Getter
+	G          getters.Getter
 	Site       string
 	SiteURL    string
 	Icon       string
@@ -28,7 +28,7 @@ func New(url string) *LuzhiboAPI {
 	g := getGetter(url)
 	if g != nil {
 		i := &LuzhiboAPI{}
-		i.g = g
+		i.G = g
 		i.URL = url
 		i.Site = g.Site()
 		i.SiteURL = g.SiteURL()
@@ -53,11 +53,11 @@ func New(url string) *LuzhiboAPI {
 
 //GetRoomInfo 取直播间信息
 func (i *LuzhiboAPI) GetRoomInfo() (id string, live bool, err error) {
-	if i.URL == "" || i.g == nil {
+	if i.URL == "" || i.G == nil {
 		err = errors.New("not has url or not found getter")
 		return
 	}
-	id, live, err = i.g.GetRoomInfo(i.URL)
+	id, live, err = i.G.GetRoomInfo(i.URL)
 	i.Id = id
 	if Logger != nil {
 		s := fmt.Sprintf("获取房间信息\"%s\",结果:", i.URL)
@@ -70,6 +70,7 @@ func (i *LuzhiboAPI) GetRoomInfo() (id string, live bool, err error) {
 			}
 		} else {
 			s += fmt.Sprint("失败(获取时出错).")
+			s += fmt.Sprint(err.Error())
 		}
 		Logger.Print(s)
 	}
@@ -78,17 +79,18 @@ func (i *LuzhiboAPI) GetRoomInfo() (id string, live bool, err error) {
 
 //GetLiveInfo 取直播信息
 func (i *LuzhiboAPI) GetLiveInfo() (live getters.LiveInfo, err error) {
-	if i.Id == "" || i.g == nil {
+	if i.Id == "" || i.G == nil {
 		err = errors.New("not has id or not found getter")
 		return
 	}
-	live, err = i.g.GetLiveInfo(i.Id)
+	live, err = i.G.GetLiveInfo(i.Id)
 	if Logger != nil {
 		s := fmt.Sprintf("获取直播信息\"%s\",结果:", i.URL)
 		if err == nil {
 			s += fmt.Sprintf("成功(直播平台:\"%s\",房间ID:\"%s\",房间标题:\"%s\",主播昵称:\"%s\",直播流地址:\"%s\".).", i.Site, i.Id, live.RoomTitle, live.LiveNick, live.VideoURL)
 		} else {
 			s += fmt.Sprint("失败(获取时出错).")
+			s += fmt.Sprint(err.Error())
 		}
 		Logger.Print(s)
 	}

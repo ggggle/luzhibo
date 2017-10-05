@@ -13,6 +13,8 @@ type longzhu struct{}
 //Site 实现接口
 func (i *longzhu) Site() string { return "龙珠直播" }
 
+func (i *longzhu) GetExtraInfo(string) (info ExtraInfo, err error) { return }
+
 //SiteURL 实现接口
 func (i *longzhu) SiteURL() string {
 	return "http://www.longzhu.com"

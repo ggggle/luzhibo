@@ -13,6 +13,8 @@ type xingyan struct{}
 //Site 实现接口
 func (i *xingyan) Site() string { return "熊猫星颜" }
 
+func (i *xingyan) GetExtraInfo(string) (info ExtraInfo, err error) { return }
+
 //SiteURL 实现接口
 func (i *xingyan) SiteURL() string {
 	return "http://xingyan.panda.tv"

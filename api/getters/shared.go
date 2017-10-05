@@ -146,8 +146,20 @@ type LiveInfo struct {
 	LiveNick    string
 }
 
+//获取一些额外信息
+type ExtraInfo struct {
+    Site         string   //网站
+    RoomTitle    string   //房间标题
+    RoomID       string   //房间id
+    CateName     string   //分类
+    RoomStatus   string   //直播状态
+    StartTime    string   //开始时间
+    OwnerName    string   //主播名
+}
+
 //Getter 房间/直播信息获取接口
 type Getter interface {
+    GetExtraInfo(string) (ExtraInfo, error)   //从其它接口获取一些需要的信息
 	GetRoomInfo(string) (string, bool, error) //获取房间信息,参数为房间地址,返回房间号,是否开播
 	GetLiveInfo(string) (LiveInfo, error)     //获取直播信息,参数为房间号,返回直播信息
 	Site() string                             //返回平台名称

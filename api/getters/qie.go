@@ -13,6 +13,8 @@ type qie struct{}
 //Site 实现接口
 func (i *qie) Site() string { return "企鹅直播" }
 
+func (i *qie) GetExtraInfo(string) (info ExtraInfo, err error) { return }
+
 //SiteURL 实现接口
 func (i *qie) SiteURL() string {
 	return "http://live.qq.com"

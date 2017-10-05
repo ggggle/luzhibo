@@ -12,6 +12,8 @@ type qiedianjing struct{}
 //Site 实现接口
 func (i *qiedianjing) Site() string { return "企鹅电竞" }
 
+func (i *qiedianjing) GetExtraInfo(string) (info ExtraInfo, err error) { return }
+
 //SiteURL 实现接口
 func (i *qiedianjing) SiteURL() string {
 	return "http://egame.qq.com"

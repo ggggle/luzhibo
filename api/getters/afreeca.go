@@ -13,6 +13,8 @@ type afreeca struct{}
 //Site 实现接口
 func (i *afreeca) Site() string { return "AfreecaTV" }
 
+func (i *afreeca) GetExtraInfo(string) (info ExtraInfo, err error) { return }
+
 //SiteURL 实现接口
 func (i *afreeca) SiteURL() string {
 	return "http://www.afreecatv.com"

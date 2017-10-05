@@ -14,6 +14,8 @@ type panda struct{}
 //Site 实现接口
 func (i *panda) Site() string { return "熊猫直播" }
 
+func (i *panda) GetExtraInfo(string) (info ExtraInfo, err error) { return }
+
 //SiteURL 实现接口
 func (i *panda) SiteURL() string {
 	return "http://www.panda.tv"

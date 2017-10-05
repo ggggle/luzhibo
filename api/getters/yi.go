@@ -12,6 +12,8 @@ type yi struct{}
 //Site 实现接口
 func (i *yi) Site() string { return "一直播" }
 
+func (i *yi) GetExtraInfo(string) (info ExtraInfo, err error) { return }
+
 //SiteURL 实现接口
 func (i *yi) SiteURL() string {
 	return "http://www.yizhibo.com"

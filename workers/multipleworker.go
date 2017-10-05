@@ -7,6 +7,7 @@ import (
     "time"
     "github.com/ggggle/luzhibo/api"
     "github.com/ggggle/luzhibo/api/getters"
+    "strings"
 )
 
 //循环模式
@@ -83,6 +84,14 @@ func (i *multipleworker) Restart() (Worker, error) {
 
 //GetTaskInfo 实现接口
 func (i *multipleworker) GetTaskInfo(g bool) (int64, bool, int64, string, *getters.LiveInfo) {
+    if 0 == strings.Compare(i.API.Site, "斗鱼直播") {
+        var r getters.LiveInfo
+        extraInfo, err := i.API.G.GetExtraInfo(i.API.Id)
+        if nil == err {
+            r.RoomTitle = extraInfo.RoomTitle
+            return 2, i.run, i.index, i.dirPath, &r
+        }
+    }
     if i.sw != nil {
         _, _, _, _, r := i.sw.GetTaskInfo(g)
         return 2, i.run, i.index, i.dirPath, r
@@ -123,20 +132,23 @@ func (i *multipleworker) do() {
             break
         }
         if i.run {
-            if 4 == ec || 6 == ec || 0 == ec {
-                go YoutubeUpload(i.API.Id, fn)
+            if 4 == ec || 6 == ec || 7 == ec {
+                go YoutubeUpload(i.API, fn, 1)
                 switch ec {
-                case 4:  //get下载过程中网络问题导致断开
+                case 4: //get下载过程中网络问题导致断开
                     api.Logger.Print("下载数据错误,立即重试")
                     continue
-                case 6:  //分段下载保存为多个文件
+                case 6: //分段下载保存为多个文件
                     api.Logger.Print("next")
+                    continue
+                case 7:
+                    api.Logger.Print("[EVENT]跳过等待")
                     continue
                 }
             }
             select {
             case <-i.ch3:
-            case <-time.After(5 * time.Minute):
+            case <-time.After(1 * time.Minute):
             }
         }
     }
