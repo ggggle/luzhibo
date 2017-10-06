@@ -40,9 +40,9 @@ func YoutubeUpload(API *api.LuzhiboAPI, fPath string, retry int) {
             if retry <= 0 {
                 return
             }
-            api.Logger.Printf("2min后重试一次，剩余重传次数[%d]", retry)
+            api.Logger.Printf("5min后重试一次，剩余重传次数[%d]", retry)
             select {
-            case <-time.After(2 * time.Minute):
+            case <-time.After(5 * time.Minute):
             }
         }
     }
