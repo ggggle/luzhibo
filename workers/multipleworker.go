@@ -101,10 +101,12 @@ func (i *multipleworker) GetTaskInfo(g bool) (int64, bool, int64, string, *gette
 
 func (i *multipleworker) do() {
     var ec int64
+    var fn string
     for i.run {
+        ec = 0
         i.ch2 = make(chan bool, 0)
         i.index++
-        fn := fmt.Sprintf("%s/%d.%s", i.dirPath, i.index, i.API.FileExt)
+        fn = fmt.Sprintf("%s/%d.%s", i.dirPath, i.index, i.API.FileExt)
         r, err := NewSingleWorker(i.API, fn, func(x int64) {
             ec = x
             i.ch2 <- true
@@ -148,12 +150,12 @@ func (i *multipleworker) do() {
             }
             select {
             case <-i.ch3:
-                go YoutubeUpload(i.API, fn, 3)
             case <-time.After(1 * time.Minute):
             }
         }
     }
     if !i.run {
+        go YoutubeUpload(i.API, fn, 3)
         i.ch <- true
     }
     i.run = false

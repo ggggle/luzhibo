@@ -29,3 +29,4 @@ _testmain.go
 .idea/workspace.xml
 releases/luzhibo_linux_amd64
 resource.syso111
+lzb.log

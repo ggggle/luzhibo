@@ -171,7 +171,8 @@ func (_ ajaxHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			quit()
 		}()
 	case "log":
-		w.Write(logBuf.Bytes())
+	    content, _ := ioutil.ReadFile("lzb.log")
+		w.Write(content)
 		return
 	}
 	w.Write([]byte(""))

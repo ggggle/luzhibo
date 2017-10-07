@@ -3,7 +3,7 @@
 package main
 
 import (
-	"bytes"
+	//"bytes"
 	"flag"
 	"fmt"
 	"log"
@@ -31,9 +31,9 @@ var htaproc *os.Process
 var nt *bool
 
 var proxy *string
-
-var logBuf = bytes.NewBufferString("")
-var logger = log.New(logBuf, "", log.LstdFlags)
+var logFile, _ = os.Create("lzb.log")
+//var logBuf = bytes.NewBufferString("")
+var logger = log.New(logFile, "", log.LstdFlags)
 
 func main() {
 	p := flag.Int("port", port, "WebUI监听端口")

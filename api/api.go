@@ -39,15 +39,6 @@ func New(url string) *LuzhiboAPI {
 	} else {
 		r = nil
 	}
-	if Logger != nil {
-		s := fmt.Sprintf("获取地址信息\"%s\",结果:", url)
-		if r != nil {
-			s += fmt.Sprintf("成功(%s).", r.Site)
-		} else {
-			s += fmt.Sprint("失败(不支持的平台).")
-		}
-		Logger.Print(s)
-	}
 	return r
 }
 
@@ -71,8 +62,8 @@ func (i *LuzhiboAPI) GetRoomInfo() (id string, live bool, err error) {
 		} else {
 			s += fmt.Sprint("失败(获取时出错).")
 			s += fmt.Sprint(err.Error())
+			Logger.Print(s)
 		}
-		Logger.Print(s)
 	}
 	return
 }
