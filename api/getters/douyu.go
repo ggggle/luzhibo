@@ -28,8 +28,7 @@ func (i *douyu) GetExtraInfo(room string) (info ExtraInfo, err error) {
             errinfo, _ := jsonparser.GetString([]byte(json), "data")
             err = errors.New("json错误码为:" + string(errorNo) + " info:" + errinfo)
             return
-        } else
-        {
+        } else {
             info.RoomTitle, _ = jsonparser.GetString([]byte(json), "data", "room_name")
             info.RoomID, _ = jsonparser.GetString([]byte(json), "data", "room_id")
             info.CateName, _ = jsonparser.GetString([]byte(json), "data", "cate_name")
