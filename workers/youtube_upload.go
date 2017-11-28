@@ -38,6 +38,9 @@ func YoutubeUpload(API *api.LuzhiboAPI, fPath string, retry int) {
         } else {
             api.Logger.Print(uploadRet)
             if retry <= 0 {
+                tmp := fmt.Sprintf("youtube-upload --client-secrets /root/.client_secret.json --privacy private --title %s --playlist %s %s",
+                    title, roomId, fPath)
+                api.Logger.Printf("上传cmd{%s}", tmp)
                 return
             }
             api.Logger.Printf("5min后重试一次，剩余重传次数[%d]", retry)

@@ -3,9 +3,9 @@ package getters
 import (
     "errors"
     "fmt"
-    "regexp"
     "strings"
     "github.com/buger/jsonparser"
+    "strconv"
 )
 
 //bilibili Bilibili直播
@@ -21,20 +21,9 @@ func (i *bilibili) GetExtraInfo(roomid string) (info ExtraInfo, err error) {
         }
     }()
     info.Site = "Bilibili"
-    url := "http://live.bilibili.com/live/getInfo?roomid=" + roomid
-    json, _ := httpGet(url)
-    if len(json) > 0 {
-        code, _ := jsonparser.GetInt([]byte(json), "code")
-        if 0 != code {
-            msg, _ := jsonparser.GetString([]byte(json), "msg")
-            err = errors.New("json错误码为:" + string(msg) + " info:" + msg)
-            return
-        } else {
-            info.RoomTitle, _ = jsonparser.GetString([]byte(json), "data", "ROOMTITLE")
-            info.OwnerName, _ = jsonparser.GetString([]byte(json), "data", "ANCHOR_NICK_NAME")
-            info.RoomID, _ = jsonparser.GetString([]byte(json), "data", "ROOMID")
-        }
-    }
+    info.RoomTitle = ""
+    info.OwnerName = ""
+    info.RoomID = roomid
     return
 }
 
@@ -65,19 +54,16 @@ func (i *bilibili) GetRoomInfo(url string) (id string, live bool, err error) {
             err = errors.New("fail get data")
         }
     }()
-    tmp, err := httpGet(url)
-    reg, _ := regexp.Compile("ROOMID = (\\d+)")
-    id = reg.FindStringSubmatch(tmp)[1]
-    url = "http://live.bilibili.com/live/getInfo?roomid=" + id
-    tmp, err = httpGet(url)
-    if !strings.Contains(tmp, "\\u623f\\u95f4\\u4e0d\\u5b58\\u5728") {
-        live = strings.Contains(tmp, "\"_status\":\"on\"")
-    } else {
-        err = errors.New("fild get data")
-    }
-    if id == "" {
-        err = errors.New("fail get data")
-    }
+    urlsplit := strings.Split(url, "/")
+    fakeid := urlsplit[len(urlsplit)-1]
+    api := "https://api.live.bilibili.com/room/v1/Room/room_init?id=" + fakeid
+    tmp, err := httpGet(api)
+    idInt, err := jsonparser.GetInt([]byte(tmp), "data", "room_id")
+    id = strconv.FormatInt(idInt, 10)
+    //从弹幕接口获取直播状态
+    dmApi := "http://live.bilibili.com/api/player?id=cid:" + id
+    tmp, err = httpGet(dmApi)
+    live = strings.Contains(tmp, "<state>LIVE</state>")
     return
 }
 
@@ -89,23 +75,17 @@ func (i *bilibili) GetLiveInfo(id string) (live LiveInfo, err error) {
         }
     }()
     live = LiveInfo{RoomID: id}
-    url := "http://api.live.bilibili.com/live/getInfo?roomid=" + id
+    url := "https://api.live.bilibili.com/api/playurl?cid=" + id + "&otype=json&quality=0&platform=web"
     tmp, err := httpGet(url)
-    json := *(pruseJSON(tmp).JToken("data"))
-    title := json["ROOMTITLE"].(string)
-    nick := json["ANCHOR_NICK_NAME"].(string)
-    img := json["COVER"].(string)
-    cid := json["ROOMID"].(float64)
-    url = fmt.Sprintf("http://live.bilibili.com/api/playurl?player=1&cid=%.0f", cid)
-    tmp, err = httpGet(url)
-    x, y := strings.Index(tmp, "<url><![CDATA[")+14, strings.LastIndex(tmp, "]]></url>")
-    video := tmp[x:y]
-    live.LiveNick = nick
-    live.RoomTitle = title
-    live.LivingIMG = img
-    live.RoomDetails = ""
-    live.VideoURL = video
-    if video == "" {
+    videoLinkNum := 1
+    jsonparser.ArrayEach([]byte(tmp), func(value []byte, dataType jsonparser.ValueType, offset int, err error) {
+        if videoLinkNum == 1 {
+            live.VideoURL, _ = jsonparser.GetString(value, "url")
+        }
+        videoLinkNum++
+    }, "durl")
+    fmt.Println(live.VideoURL + "[video]")
+    if live.VideoURL == "" {
         err = errors.New("fail get data")
     }
     return
