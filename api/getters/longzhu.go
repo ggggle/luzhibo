@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"regexp"
 	"strings"
+    "github.com/buger/jsonparser"
 )
 
 //longzhu 龙珠直播
@@ -13,7 +14,22 @@ type longzhu struct{}
 //Site 实现接口
 func (i *longzhu) Site() string { return "龙珠直播" }
 
-func (i *longzhu) GetExtraInfo(string) (info ExtraInfo, err error) { return }
+func (i *longzhu) GetExtraInfo(roomid string) (info ExtraInfo, err error) {
+    defer func() {
+        if recover() != nil {
+            err = errors.New("fail get data")
+        }
+    }()
+    info.Site = "[龙珠]"
+    info.RoomID = roomid
+    url := "http://roomapicdn.plu.cn/room/RoomAppStatusV2?domain=" + roomid
+    json, _ := httpGet(url)
+    if len(json) > 0 {
+        info.RoomTitle, _ = jsonparser.GetString([]byte(json), "BaseRoomInfo", "BoardCastTitle")
+        info.OwnerName, _ = jsonparser.GetString([]byte(json), "BaseRoomInfo", "Name")
+    }
+    return
+}
 
 //SiteURL 实现接口
 func (i *longzhu) SiteURL() string {
