@@ -2,7 +2,6 @@ package getters
 
 import (
     "errors"
-    "fmt"
     "strings"
     "github.com/buger/jsonparser"
     "strconv"
@@ -84,7 +83,6 @@ func (i *bilibili) GetLiveInfo(id string) (live LiveInfo, err error) {
         }
         videoLinkNum++
     }, "durl")
-    fmt.Println(live.VideoURL + "[video]")
     if live.VideoURL == "" {
         err = errors.New("fail get data")
     }

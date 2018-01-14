@@ -10,11 +10,17 @@ import (
     "time"
 )
 
+var MIN_FILE_SIZE int64 = 1024 * 512
 //fPath文件路径  retry失败重试次数
 func YoutubeUpload(API *api.LuzhiboAPI, fPath string, retry int) {
     info, err := os.Stat(fPath)
     if err != nil {
         api.Logger.Print(fPath + " error")
+        return
+    }
+    //512KB
+    if info.Size() < MIN_FILE_SIZE {
+        api.Logger.Printf("[%s]长度太短[%d]", fPath, info.Size())
         return
     }
     extraInfo, _ := API.G.GetExtraInfo(API.Id)
