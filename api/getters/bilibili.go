@@ -5,6 +5,7 @@ import (
     "strings"
     "github.com/buger/jsonparser"
     "strconv"
+    "fmt"
 )
 
 //bilibili Bilibili直播
@@ -19,8 +20,10 @@ func (i *bilibili) GetExtraInfo(roomid string) (info ExtraInfo, err error) {
             err = errors.New("fail get data")
         }
     }()
+    infoUrl := "https://api.live.bilibili.com/room/v1/Room/get_info?room_id=" + roomid
+    tmp, _ := httpGet(infoUrl)
+    info.RoomTitle, _ = jsonparser.GetString([]byte(tmp), "data", "title")
     info.Site = "Bilibili"
-    info.RoomTitle = ""
     info.OwnerName = ""
     info.RoomID = roomid
     return
@@ -58,11 +61,14 @@ func (i *bilibili) GetRoomInfo(url string) (id string, live bool, err error) {
     api := "https://api.live.bilibili.com/room/v1/Room/room_init?id=" + fakeid
     tmp, err := httpGet(api)
     idInt, err := jsonparser.GetInt([]byte(tmp), "data", "room_id")
-    id = strconv.FormatInt(idInt, 10)
-    //从弹幕接口获取直播状态
-    dmApi := "http://live.bilibili.com/api/player?id=cid:" + id
-    tmp, err = httpGet(dmApi)
-    live = strings.Contains(tmp, "<state>LIVE</state>")
+    id = strconv.Itoa(int(idInt))
+    live_status, err := jsonparser.GetInt([]byte(tmp), "data", "live_status")
+    if live_status == 1 {
+        live = true
+        fmt.Println(id + " live now")
+    } else {
+        live = false
+    }
     return
 }
 
@@ -80,6 +86,7 @@ func (i *bilibili) GetLiveInfo(id string) (live LiveInfo, err error) {
     jsonparser.ArrayEach([]byte(tmp), func(value []byte, dataType jsonparser.ValueType, offset int, err error) {
         if videoLinkNum == 1 {
             live.VideoURL, _ = jsonparser.GetString(value, "url")
+            fmt.Println("get live url")
         }
         videoLinkNum++
     }, "durl")

@@ -199,18 +199,6 @@ func (_ uiHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		w.Header().Add("Content-Type", "image/x-icon")
 		data, _ := b64.DecodeString(favicon_ico)
 		w.Write(data)
-	case "/donate_alipay.png":
-		w.Header().Add("Content-Type", "image/png")
-		data, _ := b64.DecodeString(donate_alipay_png)
-		w.Write(data)
-	case "/donate.gif":
-		w.Header().Add("Content-Type", "image/gif")
-		data, _ := b64.DecodeString(donate_gif)
-		w.Write(data)
-	case "/donate_wechat.png":
-		w.Header().Add("Content-Type", "image/png")
-		data, _ := b64.DecodeString(donate_wechat_png)
-		w.Write(data)
 	case "/bootstrap.min.css":
 		w.Header().Add("Content-Type", "text/css")
 		data, _ := b64.DecodeString(bootstrap_min_css)

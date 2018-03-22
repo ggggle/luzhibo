@@ -512,20 +512,6 @@ const ui_main = `<!DOCTYPE html>
                 </h1>
             </div>
             <div style="text-align:center">
-                <span>
-                    <img src="donate.gif">
-                    <img src="donate.gif">
-                    <img src="donate.gif">
-                </span>
-                <h3>这么好用的开源软件,不打赏下?良心不会痛吗?!</h3>
-                <div class="col-md-6">
-                    <h4>支付宝</h4>
-                    <img src="donate_alipay.png"/>
-                </div>
-                <div class="col-md-6">
-                    <h4>微信</h4>
-                    <img src="donate_wechat.png"/>
-                </div>
                 <h5 id="sup" hidden="hidden" style="color: gray">
                     已支持的平台:
                     <span id="supt">
@@ -533,9 +519,6 @@ const ui_main = `<!DOCTYPE html>
                     <br>
                     (带<span style="color: red; ">*</span>的平台需要FFmpeg)
                 </h5>
-                <h4>反馈,建议QQ群:<a target="_noblank"
-                                href="https://shang.qq.com/wpa/qunwpa?idkey=c5cb06c2e524eb7872f80317621bf51f9c0b1d3451451232dbe6aa3fbdbb15ff">23153821</a>
-                </h4>
             </div>
             <div class="btn-group">
                 <button disabled="disabled" class="btn btn-primary" onclick="showAddtaskUI(false)"><span

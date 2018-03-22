@@ -117,6 +117,7 @@ func (i *multipleworker) do() {
             b = true
         } else {
             i.index--
+            api.Logger.Print(err.Error() + " " + i.API.Id)
         }
         if b {
             i.sw.Start()
@@ -130,7 +131,9 @@ func (i *multipleworker) do() {
                 i.index--
             }
         }
+        api.Logger.Printf("[%s]err code[%d] index[%d]", i.API.Id, ec, i.index)
         if ec == 5 {
+            api.Logger.Print("ec code5 " + i.API.Id)
             break
         }
         if i.run {
@@ -160,6 +163,7 @@ func (i *multipleworker) do() {
     }
     i.run = false
     if i.cb != nil {
+        api.Logger.Print("执行回调")
         i.cb(ec)
     }
 }

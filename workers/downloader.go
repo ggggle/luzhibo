@@ -106,6 +106,7 @@ func (i *downloader) http(url, filepath string) {
 		ec = 3 //创建文件错误
 		return
 	}
+	api.Logger.Printf("[%s] 开始下载", filepath)
 	defer f.Close()
 	go func() {
 		for i.run {
